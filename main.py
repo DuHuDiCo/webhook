@@ -87,6 +87,7 @@ async def webhook(request: Request):
 
     # Extraemos el número de teléfono del remitente y el mensaje
     sender_number = payload['entry'][0]['changes'][0]['value']['messages'][0]['from']
+    number_id = payload['entry'][0]['changes'][0]['value']['metadata']['phone_number_id']
     message_text = payload['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']
     
     # Imprimir para depuración
@@ -103,7 +104,7 @@ async def webhook(request: Request):
     }
 
     # Enviar la respuesta al remitente usando la API de WhatsApp Business
-    url = f"https://graph.facebook.com/v16.0/{sender_number}/messages"
+    url = f"https://graph.facebook.com/v16.0/{number_id}/messages"
     headers = {
         "Authorization": f"Bearer {expected_token}",
         "Content-Type": "application/json"
