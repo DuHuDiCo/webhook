@@ -21,4 +21,4 @@ async def verify_webhook(request: Request, hub_mode: str = None, hub_challenge: 
         if hub_mode == "subscribe":
             return PlainTextResponse(content=hub_challenge)
     else:
-        return PlainTextResponse(content="Unauthorized", status_code=403)
+        return PlainTextResponse(content="Unauthorized", status_code=401)
