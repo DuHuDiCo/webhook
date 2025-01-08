@@ -116,6 +116,11 @@ async def webhook(request: Request):
                             
                             # Solicitar los detalles del archivo de medios
                             media_response = requests.get(download_url, headers=headers)
+                            
+                            print("REQUEST:")
+                            print(media_response)
+                            
+                            
                             if media_response.status_code == 200:
                                 media_data = media_response.json()
                                 file_url = media_data["url"]
