@@ -100,11 +100,12 @@ async def webhook(request: Request):
     data = {
         "messaging_product": "whatsapp",
         "to": sender_number,
+        "type": "text",
         "text": {"body": response_message}
     }
 
     # Enviar la respuesta al remitente usando la API de WhatsApp Business
-    url = f"https://graph.facebook.com/v16.0/{number_id}/messages"
+    url = f"https://graph.facebook.com/v21.0/{number_id}/messages"
     headers = {
         "Authorization": f"Bearer {expected_token}",
         "Content-Type": "application/json"
