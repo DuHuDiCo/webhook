@@ -113,6 +113,7 @@ async def webhook(request: Request):
                             headers = {
                                 "Authorization": f"Bearer ${expected_token}",
                             }
+                            print(headers)
                             
                             # Solicitar los detalles del archivo de medios
                             media_response = requests.get(download_url, headers=headers)
