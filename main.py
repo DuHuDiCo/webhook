@@ -74,6 +74,6 @@ async def verify_webhook(request: Request):
     
 @app.post("/webhook/verify")
 async def webhook(request: Request):
-    
-    print(request)
-    return {"message": "datos recibidos correctamente"}
+    payload = await request.json()
+    print(payload)  # Para ver qué datos estás recibiendo
+    return {"status": "EVENT_RECEIVED"}
