@@ -116,6 +116,7 @@ async def webhook(request: Request):
 
     # Verificamos si se envió correctamente
     if response.status_code == 200:
+        print({"status": "Message sent"})
         return {"status": "Message sent"}
     else:
         return {"status": "Failed to send message", "error": response.json()}
