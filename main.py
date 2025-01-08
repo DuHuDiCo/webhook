@@ -40,7 +40,7 @@ class WebhookPayload(BaseModel):
     value: Value
 
 
-expected_token = "EAAXRz1H2U84BOzvhWOslZAnVryCduZCQb8XWmk5tZAcxuOJKOiEwtH83maCUz8MMMZAnuDe4Y0y3kkdDoAycjl5SLWRVO5EvYKroSSDdziC0BbtSTDBt81FlQLGvWT6eMm0xGJZBAXHZAIKnBrOuvwnr4km0ekOuzTOOJxVlJZBICv6ygut1tRHz3rlnmvsQgBDKRjzn0ZCMzpsdqKlCVjy0ePko7IW2won7gOt4PditCAZDZD"
+expected_token = "EAAXRz1H2U84BO49c7WZC9mqWZAF4w7vx8ZCN1LIjDnq2SM2pOXnDZBYEPeHmCZBuZBPaY2LQCSd0NKYcmVz7kBW7TZAiZAZBUylu9s0JZBZCZCOohZADnoC5btiRDuHrKqGwNnGHl3j9XtCPsWTdYL9ZCvLa1hVDceucAo4TsfcGGLE1vvWWQYBBzwUSsPao64KpESfy6Vgq0EF3DSXOpX4ADAkL2kMOJV8i9AAPYlpJNRl0oESGoZD"
 
 
 
@@ -117,6 +117,7 @@ async def webhook(request: Request):
     response = requests.post(url, headers=headers, data=json.dumps(data))
 
     # Verificamos si se envió correctamente
+    print(response.status_code)
     if response.status_code == 200:
         print({"status": "Message sent"})
         return {"status": "EVENT_RECEIVED"}
