@@ -129,10 +129,13 @@ async def webhook(request: Request):
                                 # Descargar el archivo desde la URL
                                 file_response = requests.get(file_url)
                                 if file_response.status_code == 200:
-                                    # Guardar la imagen en el servidor
-                                    with open("received_image.jpg", "wb") as f:
-                                        f.write(file_response.content)
-                                    print("Imagen descargada y guardada")
+                                    
+                                    print(file_response.content)
+                                    
+                                    # # Guardar la imagen en el servidor
+                                    # with open("received_image.jpg", "wb") as f:
+                                    #     f.write(file_response.content)
+                                    # print("Imagen descargada y guardada")
                                 else:
                                     print(f"Error al descargar la imagen: {file_response.status_code}")
                             else:
