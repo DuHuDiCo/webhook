@@ -12,7 +12,7 @@ async def webhook(file: UploadFile = File(...)):
         return HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
     
     
-@app.get("/webhook")
+@app.get("/webhook/verify")
 async def verify_webhook(request: Request, hub_mode: str = None, hub_challenge: str = None, hub_verify_token: str = None):
     # Aquí validas el `hub_verify_token` con el valor esperado
     expected_token = "EAAXRz1H2U84BOzvhWOslZAnVryCduZCQb8XWmk5tZAcxuOJKOiEwtH83maCUz8MMMZAnuDe4Y0y3kkdDoAycjl5SLWRVO5EvYKroSSDdziC0BbtSTDBt81FlQLGvWT6eMm0xGJZBAXHZAIKnBrOuvwnr4km0ekOuzTOOJxVlJZBICv6ygut1tRHz3rlnmvsQgBDKRjzn0ZCMzpsdqKlCVjy0ePko7IW2won7gOt4PditCAZDZD"
