@@ -3,6 +3,8 @@ from fastapi.responses import PlainTextResponse
 
 app = FastAPI()
 
+
+
 @app.post("/webhook")
 async def webhook(file: UploadFile = File(...)):
     try:
@@ -40,6 +42,7 @@ async def verify_webhook(request: Request):
         return PlainTextResponse(content="Unauthorized", status_code=401)
     
 @app.post("/webhook/verify")
-async def webhook(payload: str):
+async def webhook(request: Request):
+    payload: dict = await request.json()
     print(payload)
     return {"message": "datos recibidos correctamente"}
