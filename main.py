@@ -100,35 +100,70 @@ async def webhook(request: Request):
                         sender_number = message.get('from')
                         message_body = message.get('text', {}).get('body')
                         phone_number_id = value.get('metadata', {}).get('phone_number_id')
-
-                        if sender_number and message_body:
-                            print(f"Mensaje recibido de {sender_number}: {message_body}")
-
-                            # Preparar el mensaje de respuesta
-                            response_message = "Mensaje recibido con éxito"
-
-                            data = {
-                                "messaging_product": "whatsapp",
-                                "to": sender_number,
-                                "type": "text",
-                                "text": {
-                                    "body": response_message
-                                }
-                            }
-
-                            # Enviar la respuesta usando la API de WhatsApp Business
-                            url = f"https://graph.facebook.com/v21.0/{phone_number_id}/messages"
+                        
+                        
+                        if "image" in message:
+                             # Si el mensaje contiene una imagen
+                            image_info = message["image"]
+                            media_id = image_info["id"]
+                            
+                             # Obtener la URL para descargar el archivo de medios
+                            download_url = f"https://graph.facebook.com/v21.0/{media_id}/"
                             headers = {
-                                "Authorization": f"Bearer {expected_token}",
-                                "Content-Type": "application/json"
+                                "Authorization": f"Bearer ${expected_token}",
                             }
+                            
+                            # Solicitar los detalles del archivo de medios
+                            media_response = requests.get(download_url, headers=headers)
+                            if media_response.status_code == 200:
+                                media_data = media_response.json()
+                                file_url = media_data["url"]
 
-                            response = requests.post(url, headers=headers, data=json.dumps(data))
-
-                            if response.status_code == 200:
-                                print("Mensaje enviado exitosamente.")
+                                # Descargar el archivo desde la URL
+                                file_response = requests.get(file_url)
+                                if file_response.status_code == 200:
+                                    # Guardar la imagen en el servidor
+                                    with open("received_image.jpg", "wb") as f:
+                                        f.write(file_response.content)
+                                    print("Imagen descargada y guardada")
+                                else:
+                                    print(f"Error al descargar la imagen: {file_response.status_code}")
                             else:
-                                print(f"Error al enviar el mensaje: {response.text}")
+                                print(f"Error al obtener la URL del archivo: {media_response.status_code}")
+                        
+                        
+                        elif "text" in message:
+
+                            if sender_number and message_body:
+                                print(f"Mensaje recibido de {sender_number}: {message_body}")
+
+                                
+                        
+                        # Preparar el mensaje de respuesta
+                        response_message = "Mensaje recibido con éxito"
+
+                        data = {
+                            "messaging_product": "whatsapp",
+                            "to": sender_number,
+                            "type": "text",
+                            "text": {
+                                "body": response_message
+                            }
+                        }
+
+                        # Enviar la respuesta usando la API de WhatsApp Business
+                        url = f"https://graph.facebook.com/v21.0/{phone_number_id}/messages"
+                        headers = {
+                            "Authorization": f"Bearer {expected_token}",
+                            "Content-Type": "application/json"
+                        }
+
+                        response = requests.post(url, headers=headers, data=json.dumps(data))
+
+                        if response.status_code == 200:
+                            print("Mensaje enviado exitosamente.")
+                        else:
+                            print(f"Error al enviar el mensaje: {response.text}")        
 
         # Responder a Meta que el evento fue recibido correctamente
         return JSONResponse(content={"status": "EVENT_RECEIVED"}, status_code=200)
