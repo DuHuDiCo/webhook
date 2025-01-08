@@ -108,7 +108,7 @@ async def webhook(request: Request):
                             media_id = image_info["id"]
                             
                              # Obtener la URL para descargar el archivo de medios
-                            download_url = f"https://graph.facebook.com/v21.0/{media_id}/"
+                            download_url = f"https://graph.facebook.com/v21.0/{media_id}"
                             headers = {
                                 "Authorization": f"Bearer ${expected_token}",
                             }
