@@ -106,6 +106,7 @@ async def webhook(request: Request):
                              # Si el mensaje contiene una imagen
                             image_info = message["image"]
                             media_id = image_info["id"]
+                            print("IMAGE ID: "+media_id)
                             
                              # Obtener la URL para descargar el archivo de medios
                             download_url = f"https://graph.facebook.com/v21.0/{media_id}"
