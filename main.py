@@ -2,6 +2,10 @@ from fastapi import FastAPI, File, UploadFile, HTTPException,Request
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
 from typing import List, Optional
+import requests
+import json
+
+
 app = FastAPI()
 # Definir las clases de Pydantic que coinciden con la estructura de los datos
 class Profile(BaseModel):
@@ -36,6 +40,10 @@ class WebhookPayload(BaseModel):
     value: Value
 
 
+expected_token = "EAAXRz1H2U84BOzvhWOslZAnVryCduZCQb8XWmk5tZAcxuOJKOiEwtH83maCUz8MMMZAnuDe4Y0y3kkdDoAycjl5SLWRVO5EvYKroSSDdziC0BbtSTDBt81FlQLGvWT6eMm0xGJZBAXHZAIKnBrOuvwnr4km0ekOuzTOOJxVlJZBICv6ygut1tRHz3rlnmvsQgBDKRjzn0ZCMzpsdqKlCVjy0ePko7IW2won7gOt4PditCAZDZD"
+
+
+
 @app.post("/webhook")
 async def webhook(file: UploadFile = File(...)):
     try:
@@ -48,7 +56,7 @@ async def webhook(file: UploadFile = File(...)):
 @app.get("/webhook/verify")
 async def verify_webhook(request: Request):
     # Aquí validas el `hub_verify_token` con el valor esperado
-    expected_token = "EAAXRz1H2U84BOzvhWOslZAnVryCduZCQb8XWmk5tZAcxuOJKOiEwtH83maCUz8MMMZAnuDe4Y0y3kkdDoAycjl5SLWRVO5EvYKroSSDdziC0BbtSTDBt81FlQLGvWT6eMm0xGJZBAXHZAIKnBrOuvwnr4km0ekOuzTOOJxVlJZBICv6ygut1tRHz3rlnmvsQgBDKRjzn0ZCMzpsdqKlCVjy0ePko7IW2won7gOt4PditCAZDZD"
+    
     
      # Obtener los parámetros de la URL
     params = request.query_params
@@ -74,6 +82,38 @@ async def verify_webhook(request: Request):
     
 @app.post("/webhook/verify")
 async def webhook(request: Request):
+    # Extraemos el cuerpo de la solicitud en formato JSON
     payload = await request.json()
-    print(payload)  # Para ver qué datos estás recibiendo
-    return {"status": "EVENT_RECEIVED"}
+
+    # Extraemos el número de teléfono del remitente y el mensaje
+    sender_number = payload['entry'][0]['changes'][0]['value']['messages'][0]['from']
+    message_text = payload['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']
+    
+    # Imprimir para depuración
+    print(f"Mensaje recibido de {sender_number}: {message_text}")
+
+    # Definir el mensaje que se va a enviar como respuesta
+    response_message = "Mensaje recibido"
+    
+    # Preparar el cuerpo de la solicitud para enviar el mensaje
+    data = {
+        "messaging_product": "whatsapp",
+        "to": sender_number,
+        "text": {"body": response_message}
+    }
+
+    # Enviar la respuesta al remitente usando la API de WhatsApp Business
+    url = f"https://graph.facebook.com/v16.0/{sender_number}/messages"
+    headers = {
+        "Authorization": f"Bearer {expected_token}",
+        "Content-Type": "application/json"
+    }
+
+    # Realizar la solicitud POST para enviar el mensaje
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+
+    # Verificamos si se envió correctamente
+    if response.status_code == 200:
+        return {"status": "Message sent"}
+    else:
+        return {"status": "Failed to send message", "error": response.json()}
