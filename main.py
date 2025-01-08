@@ -121,4 +121,5 @@ async def webhook(request: Request):
         print({"status": "Message sent"})
         return {"status": "EVENT_RECEIVED"}
     else:
+        print({"status": "Message no sent"})
         return {"status": "Failed to send message", "error": response.json()}
