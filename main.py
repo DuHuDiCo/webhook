@@ -13,10 +13,16 @@ async def webhook(file: UploadFile = File(...)):
     
     
 @app.get("/webhook/verify")
-async def verify_webhook(request: Request, hub_mode: str = None, hub_challenge: str = None, hub_verify_token: str = None):
+async def verify_webhook(request: Request):
     # Aquí validas el `hub_verify_token` con el valor esperado
     expected_token = "EAAXRz1H2U84BOzvhWOslZAnVryCduZCQb8XWmk5tZAcxuOJKOiEwtH83maCUz8MMMZAnuDe4Y0y3kkdDoAycjl5SLWRVO5EvYKroSSDdziC0BbtSTDBt81FlQLGvWT6eMm0xGJZBAXHZAIKnBrOuvwnr4km0ekOuzTOOJxVlJZBICv6ygut1tRHz3rlnmvsQgBDKRjzn0ZCMzpsdqKlCVjy0ePko7IW2won7gOt4PditCAZDZD"
     
+     # Obtener los parámetros de la URL
+    params = request.query_params
+
+    hub_mode = params.get('hub.mode')
+    hub_challenge = params.get('hub.challenge')
+    hub_verify_token = params.get('hub.verify_token')
     
     print(hub_mode)
     print(hub_challenge)
