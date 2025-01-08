@@ -99,7 +99,7 @@ async def webhook(request: Request):
                     for message in messages:
                         sender_number = message.get('from')
                         message_body = message.get('text', {}).get('body')
-                        phone_number_id = message.get('metadata', {}).get('phone_number_id')
+                        phone_number_id = value.get('metadata', {}).get('phone_number_id')
 
                         if sender_number and message_body:
                             print(f"Mensaje recibido de {sender_number}: {message_body}")
