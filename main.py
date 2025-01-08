@@ -1,9 +1,10 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException,Request
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import PlainTextResponse,JSONResponse
 from pydantic import BaseModel
 from typing import List, Optional
 import requests
 import json
+
 
 
 app = FastAPI()
@@ -82,45 +83,59 @@ async def verify_webhook(request: Request):
     
 @app.post("/webhook/verify")
 async def webhook(request: Request):
-    # Extraemos el cuerpo de la solicitud en formato JSON
-    payload = await request.json()
+    try:
+        payload = await request.json()
+        print("Payload recibido:", json.dumps(payload, indent=2))  # Para depuración
 
-    # Extraemos el número de teléfono del remitente y el mensaje
-    sender_number = payload['entry'][0]['changes'][0]['value']['messages'][0]['from']
-    number_id = payload['entry'][0]['changes'][0]['value']['metadata']['phone_number_id']
-    message_text = payload['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']
-    
-    # Imprimir para depuración
-    print(f"Mensaje recibido de {sender_number}: {message_text}")
+        # Verificar si 'entry' y 'changes' están en el payload
+        entries = payload.get('entry', [])
+        for entry in entries:
+            changes = entry.get('changes', [])
+            for change in changes:
+                value = change.get('value', {})
+                messages = value.get('messages', [])
 
-    # Definir el mensaje que se va a enviar como respuesta
-    response_message = "Mensaje recibido"
-    
-    # Preparar el cuerpo de la solicitud para enviar el mensaje
-    data = {
-        "messaging_product": "whatsapp",
-        "to": sender_number,
-        "type": "text",
-        "text": {"body": response_message}
-    }
-    print(data)
-    print("NUMBER_ID: "+number_id)
+                if messages:
+                    for message in messages:
+                        sender_number = message.get('from')
+                        message_body = message.get('text', {}).get('body')
+                        phone_number_id = message.get('metadata', {}).get('phone_number_id')
 
-    # Enviar la respuesta al remitente usando la API de WhatsApp Business
-    url = f"https://graph.facebook.com/v21.0/{number_id}/messages"
-    headers = {
-        "Authorization": f"Bearer {expected_token}",
-        "Content-Type": "application/json"
-    }
+                        if sender_number and message_body:
+                            print(f"Mensaje recibido de {sender_number}: {message_body}")
 
-    # Realizar la solicitud POST para enviar el mensaje
-    response = requests.post(url, headers=headers, data=json.dumps(data))
+                            # Preparar el mensaje de respuesta
+                            response_message = "Mensaje recibido con éxito"
 
-    # Verificamos si se envió correctamente
-    print(response.status_code)
-    if response.status_code == 200:
-        print({"status": "Message sent"})
-        return {"status": "EVENT_RECEIVED"}
-    else:
-        print({"status": "Message no sent"})
-        return {"status": "Failed to send message", "error": response.json()}
+                            data = {
+                                "messaging_product": "whatsapp",
+                                "to": sender_number,
+                                "type": "text",
+                                "text": {
+                                    "body": response_message
+                                }
+                            }
+
+                            # Enviar la respuesta usando la API de WhatsApp Business
+                            url = f"https://graph.facebook.com/v21.0/{phone_number_id}/messages"
+                            headers = {
+                                "Authorization": f"Bearer {expected_token}",
+                                "Content-Type": "application/json"
+                            }
+
+                            response = requests.post(url, headers=headers, data=json.dumps(data))
+
+                            if response.status_code == 200:
+                                print("Mensaje enviado exitosamente.")
+                            else:
+                                print(f"Error al enviar el mensaje: {response.text}")
+
+        # Responder a Meta que el evento fue recibido correctamente
+        return JSONResponse(content={"status": "EVENT_RECEIVED"}, status_code=200)
+
+    except KeyError as e:
+        print(f"KeyError: {e}")
+        raise HTTPException(status_code=400, detail=f"Missing key: {e}")
+    except Exception as e:
+        print(f"Exception: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
