@@ -103,6 +103,7 @@ async def webhook(request: Request):
         "type": "text",
         "text": {"body": response_message}
     }
+    print(data)
 
     # Enviar la respuesta al remitente usando la API de WhatsApp Business
     url = f"https://graph.facebook.com/v21.0/{number_id}/messages"
@@ -117,6 +118,6 @@ async def webhook(request: Request):
     # Verificamos si se envió correctamente
     if response.status_code == 200:
         print({"status": "Message sent"})
-        return {"status": "Message sent"}
+        return {"status": "EVENT_RECEIVED"}
     else:
         return {"status": "Failed to send message", "error": response.json()}
