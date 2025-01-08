@@ -18,6 +18,8 @@ async def verify_webhook(request: Request, hub_mode: str = None, hub_challenge: 
     expected_token = "EAAXRz1H2U84BOzvhWOslZAnVryCduZCQb8XWmk5tZAcxuOJKOiEwtH83maCUz8MMMZAnuDe4Y0y3kkdDoAycjl5SLWRVO5EvYKroSSDdziC0BbtSTDBt81FlQLGvWT6eMm0xGJZBAXHZAIKnBrOuvwnr4km0ekOuzTOOJxVlJZBICv6ygut1tRHz3rlnmvsQgBDKRjzn0ZCMzpsdqKlCVjy0ePko7IW2won7gOt4PditCAZDZD"
     
     
+    print(hub_mode)
+    print(hub_challenge)
     print(hub_verify_token)
     
     print(hub_verify_token == expected_token)
