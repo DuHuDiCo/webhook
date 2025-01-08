@@ -1,8 +1,39 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException,Request
 from fastapi.responses import PlainTextResponse
-from typing import Dict
+from pydantic import BaseModel
+from typing import List, Optional
 app = FastAPI()
+# Definir las clases de Pydantic que coinciden con la estructura de los datos
+class Profile(BaseModel):
+    name: str
 
+class Contact(BaseModel):
+    profile: Profile
+    wa_id: str
+
+class TextMessage(BaseModel):
+    body: str
+
+class Message(BaseModel):
+    from_: str
+    id: str
+    timestamp: str
+    type: str
+    text: Optional[TextMessage] = None  # Solo si el tipo es texto
+
+class Metadata(BaseModel):
+    display_phone_number: str
+    phone_number_id: str
+
+class Value(BaseModel):
+    messaging_product: str
+    metadata: Metadata
+    contacts: List[Contact]
+    messages: List[Message]
+
+class WebhookPayload(BaseModel):
+    field: str
+    value: Value
 
 
 @app.post("/webhook")
@@ -42,7 +73,7 @@ async def verify_webhook(request: Request):
         return PlainTextResponse(content="Unauthorized", status_code=401)
     
 @app.post("/webhook/verify")
-async def webhook(request: Request):
-    payload: Dict = await request.json()
+async def webhook(payload: WebhookPayload):
+    
     print(payload)
     return {"message": "datos recibidos correctamente"}
