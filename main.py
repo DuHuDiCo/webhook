@@ -1,6 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException,Request
 from fastapi.responses import PlainTextResponse
-
+from typing import Dict
 app = FastAPI()
 
 
@@ -43,6 +43,6 @@ async def verify_webhook(request: Request):
     
 @app.post("/webhook/verify")
 async def webhook(request: Request):
-    payload: dict = await request.json()
+    payload: Dict = await request.json()
     print(payload)
     return {"message": "datos recibidos correctamente"}
