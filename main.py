@@ -73,7 +73,7 @@ async def verify_webhook(request: Request):
         return PlainTextResponse(content="Unauthorized", status_code=401)
     
 @app.post("/webhook/verify")
-async def webhook(payload: WebhookPayload):
+async def webhook(request: Request):
     
-    print(payload)
+    print(request)
     return {"message": "datos recibidos correctamente"}
