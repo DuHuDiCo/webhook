@@ -62,11 +62,7 @@ def obtener_datos_de_redis(telefono):
     session_data = r.hgetall(clave)
     
     if session_data:
-        # Convertir los datos de bytes a texto (usando .decode('utf-8')) y luego deserializar (json.loads)
-        session_data = {
-            key.decode('utf-8'): json.loads(value.decode('utf-8')) if isinstance(value, bytes) else value
-            for key, value in session_data.items()
-        }
+       
         return session_data
     else:
         return None
