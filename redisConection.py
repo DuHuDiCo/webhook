@@ -15,7 +15,7 @@ def guardar_datos_en_redis(telefono,message_type,content):
             "comprobante": {
                     "numero_de_recibo": "aaaa",
                     "fecha_pago": "aaaa",
-                    "valor": 02,
+                    "valor": "02",
                     "banco": "aaa",
                     "url": "aaa"
             }
