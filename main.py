@@ -188,7 +188,9 @@ async def webhook(request: Request):
                         response = requests.post(url, headers=headers, data=json.dumps(data))
 
                         if response.status_code == 200:
-                            print(redisConection.obtener_datos_de_redis(phone_number_id))
+                            response = redisConection.obtener_datos_de_redis(phone_number_id)
+                            
+                            print(response["comprobante"]["url"])
                             print("Mensaje enviado exitosamente.")
                         else:
                             print(f"Error al enviar el mensaje: {response.text}")        
