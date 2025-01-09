@@ -156,7 +156,9 @@ async def webhook(request: Request):
 
                             if sender_number and message_body:
                                 
-                                redisConection.guardar_datos_en_redis(phone_number_id, "text", message_body)
+                                message= {"text": message_body}
+                                
+                                redisConection.guardar_datos_en_redis(phone_number_id, "text", message)
                                 
                                 
                                 
