@@ -38,6 +38,10 @@ def guardar_datos_en_redis(telefono,message_type,content):
     # if not validate_comprobante(session_data["comprobante"]):
     #     return None;
     
+    
+    print(session_data)
+    
+    
     r.hset(clave, json.dumps(session_data))
     r.expire(clave, 3600)  # Expira en 1 hora
     
