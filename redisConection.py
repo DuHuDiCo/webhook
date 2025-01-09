@@ -13,13 +13,11 @@ def guardar_datos_en_redis(telefono,message_type,content):
     if not session_data:
         session_data = {
             "cedula": "",
-            "comprobante": {
-                    "numero_de_recibo": "aaaa",
-                    "fecha_pago": "aaaa",
-                    "valor": "02",
-                    "banco": "aaa",
-                    "url": "aaa"
-            }
+            "numero_de_recibo": "aaaa",
+            "fecha_pago": "aaaa",
+            "valor": "02",
+            "banco": "aaa",
+            "url": "aaa"
         }
     
     
@@ -27,7 +25,7 @@ def guardar_datos_en_redis(telefono,message_type,content):
         session_data["cedula"] = content["text"]
         
     if message_type == "image":
-        session_data["comprobante"]["url"] = content["url"]
+        session_data["url"] = content["url"]
     
     if message_type == "comprobante":
         session_data["numero_de_recibo"] = content["comprobante"]["numero_de_recibo"]
