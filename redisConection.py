@@ -50,10 +50,17 @@ def guardar_datos_en_redis(telefono,message_type,content):
     return session_data
 
 
+# Recuperar y deserializar los datos de Redis:
 def obtener_datos_de_redis(telefono):
     clave = f"session:{telefono}"
-    return r.hgetall(clave)
-
+    session_data = r.hgetall(clave)
+    
+    if session_data:
+        # Convertir los valores en 'comprobante' a un objeto JSON real
+        if b"comprobante" in session_data:
+            session_data[b"comprobante"] = json.loads(session_data[b"comprobante"].decode('utf-8'))
+        return session_data
+    return None
 
 def validate_comprobante(comprobante):
     # Validar que todas las claves tengan valores válidos
