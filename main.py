@@ -190,7 +190,7 @@ async def webhook(request: Request):
                         if response.status_code == 200:
                             response = redisConection.obtener_datos_de_redis(phone_number_id)
                             
-                            print(response[0][0])
+                            print(response)
                             print("Mensaje enviado exitosamente.")
                         else:
                             print(f"Error al enviar el mensaje: {response.text}")        
