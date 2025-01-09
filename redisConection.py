@@ -35,8 +35,8 @@ def guardar_datos_en_redis(telefono,message_type,content):
         session_data["comprobante"]["banco"] = content["comprobante"]["banco"]
         
     
-    if not validate_comprobante(session_data["comprobante"]):
-        return None;
+    # if not validate_comprobante(session_data["comprobante"]):
+    #     return None;
     
     r.hset(clave, mapping=session_data)
     r.expire(clave, 3600)  # Expira en 1 hora
