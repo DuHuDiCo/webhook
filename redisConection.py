@@ -13,11 +13,11 @@ def guardar_datos_en_redis(telefono,message_type,content):
         session_data = {
             "cedula": "",
             "comprobante": {
-                    "numero_de_recibo": "",
-                    "fecha_pago": "",
-                    "valor": 0,
-                    "banco": "",
-                    "url": ""
+                    "numero_de_recibo": "aaaa",
+                    "fecha_pago": "aaaa",
+                    "valor": 02,
+                    "banco": "aaa",
+                    "url": "aaa"
             }
         }
     
