@@ -186,6 +186,7 @@ async def webhook(request: Request):
                         response = requests.post(url, headers=headers, data=json.dumps(data))
 
                         if response.status_code == 200:
+                            print(redisConection.obtener_datos_de_redis())
                             print("Mensaje enviado exitosamente.")
                         else:
                             print(f"Error al enviar el mensaje: {response.text}")        
