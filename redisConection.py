@@ -41,12 +41,12 @@ def guardar_datos_en_redis(telefono,message_type,content):
     print(session_data)
     
    # Guardamos los datos directamente en Redis (sin anidar el campo "data")
-    r.hset(clave, "cedula", session_data["cedula"])
-    r.hset(clave, "numero_de_recibo", session_data["numero_de_recibo"])
-    r.hset(clave, "fecha_pago", session_data["fecha_pago"])
-    r.hset(clave, "valor", session_data["valor"])
-    r.hset(clave, "banco", session_data["banco"])
-    r.hset(clave, "url", session_data["url"])
+    r.hset(clave,  json.dumps(session_data))
+    # r.hset(clave, "numero_de_recibo", session_data["numero_de_recibo"])
+    # r.hset(clave, "fecha_pago", session_data["fecha_pago"])
+    # r.hset(clave, "valor", session_data["valor"])
+    # r.hset(clave, "banco", session_data["banco"])
+    # r.hset(clave, "url", session_data["url"])
     r.expire(clave, 3600)  # Expira en 1 hora
     
     
