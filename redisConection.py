@@ -8,6 +8,7 @@ def guardar_datos_en_redis(telefono,message_type,content):
     
     session_data = r.hgetall(clave)
     
+    print(session_data)
     
     if not session_data:
         session_data = {
@@ -29,10 +30,10 @@ def guardar_datos_en_redis(telefono,message_type,content):
         session_data["comprobante"]["url"] = content["url"]
     
     if message_type == "comprobante":
-        session_data["comprobante"]["numero_de_recibo"] = content["comprobante"]["numero_de_recibo"]
-        session_data["comprobante"]["fecha_pago"] = content["comprobante"]["fecha_pago"]
-        session_data["comprobante"]["valor"] = content["comprobante"]["valor"]
-        session_data["comprobante"]["banco"] = content["comprobante"]["banco"]
+        session_data["numero_de_recibo"] = content["comprobante"]["numero_de_recibo"]
+        session_data["fecha_pago"] = content["comprobante"]["fecha_pago"]
+        session_data["valor"] = content["comprobante"]["valor"]
+        session_data["banco"] = content["comprobante"]["banco"]
         
     
     # if not validate_comprobante(session_data["comprobante"]):
