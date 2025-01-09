@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 import requests
 import json
-import redis
+import redisConection
 
 
 app = FastAPI()
@@ -156,7 +156,7 @@ async def webhook(request: Request):
 
                             if sender_number and message_body:
                                 
-                                redis.guardar_datos_en_redis(phone_number_id, "text", message_body)
+                                redisConection.guardar_datos_en_redis(phone_number_id, "text", message_body)
                                 
                                 
                                 
