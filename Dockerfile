@@ -12,6 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Crear carpeta para subir archivos
+RUN rm -R uploads/
 RUN mkdir /app/uploads
 
 # Exponer el puerto de la aplicación
