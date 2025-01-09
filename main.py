@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 import requests
 import json
-
+import redis
 
 
 app = FastAPI()
@@ -135,16 +135,19 @@ async def webhook(request: Request):
 
                                 # Descargar el archivo desde la URL
                                 file_response = requests.get(download_file_url, headers=headers)
-                                if file_response.status_code == 200:
-                                    
-                                    
-                                    
-                                    # Guardar la imagen en el servidor
-                                    with open("received_image.jpg", "wb") as f:
-                                        f.write(file_response.content)
-                                    print("Imagen descargada y guardada")
-                                else:
+                                
+                                if file_response.status_code != 200:
                                     print(f"Error al descargar la imagen: {file_response.status_code}")
+                                    
+                               
+                                    
+                                path = "uploads/"
+                                filename = path+"received_image.jpg"
+                                # Guardar la imagen en el servidor
+                                with open(filename, "wb") as f:
+                                    f.write(file_response.content)
+                                print("Imagen descargada y guardada")
+                                    
                             else:
                                 print(f"Error al obtener la URL del archivo: {media_response.status_code}")
                         
@@ -152,6 +155,11 @@ async def webhook(request: Request):
                         elif "text" in message:
 
                             if sender_number and message_body:
+                                
+                                redis.guardar_datos_en_redis(phone_number_id, "text", message_body)
+                                
+                                
+                                
                                 print(f"Mensaje recibido de {sender_number}: {message_body}")
 
                                 
