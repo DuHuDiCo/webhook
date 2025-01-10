@@ -109,8 +109,8 @@ async def webhook(request: Request):
                             print(message_body)
                             image_info =  message.get('image', {})
                             media_id = image_info.get("id")
-                            # extention= image_info.get("mime_type").split("/")[1]
-                            # filename = f"{sender_number}_{message_body}_{media_id}.{extention}"
+                            extention = image_info.get("mime_type").split("/")[1]
+                            filename = f"{sender_number}_{media_id}.{extention}"
                             print("IMAGE ID: "+media_id)
                             
                              # Obtener la URL para descargar el archivo de medios
@@ -137,6 +137,7 @@ async def webhook(request: Request):
                                 
                                 
                                 redisConection.guardar_datos_en_redis(phone_number_id, "image", image_url)
+                                guardarImagen(file_url, headers, filename)
                                 print("Imagen recibida y guardada en Redis")
 
                                 # # Descargar el archivo desde la URL
@@ -212,3 +213,20 @@ async def webhook(request: Request):
     except Exception as e:
         print(f"Exception: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+def guardarImagen(image_url, headers, nombre_archivo):
+    # Descargar el archivo desde la URL
+    file_response = requests.get(image_url, headers=headers)
+    
+    if file_response.status_code != 200:
+        print(f"Error al descargar la imagen: {file_response.status_code}")
+        
+    
+        
+    path = "uploads/"
+    filename = path+nombre_archivo
+    # Guardar la imagen en el servidor
+    with open(filename, "wb") as f:
+        f.write(file_response.content)
+    print("Imagen descargada y guardada")
