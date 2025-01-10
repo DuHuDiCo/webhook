@@ -106,10 +106,11 @@ async def webhook(request: Request):
                         
                         if "image" in message:
                              # Si el mensaje contiene una imagen
+                            print(message_body)
                             image_info =  message.get('image', {})
                             media_id = image_info.get("id")
                             extention= image_info.get("mime_type").split("/")[1]
-                            filename = f"{sender_number}_{message_body}_{media_id}.{extention}"
+                            # filename = f"{sender_number}_{message_body}_{media_id}.{extention}"
                             print("IMAGE ID: "+media_id)
                             
                              # Obtener la URL para descargar el archivo de medios
