@@ -131,23 +131,23 @@ async def webhook(request: Request):
 
                                 
                                 
+                                redisConection.guardar_datos_en_redis(phone_number_id, "image", file_url)
+                                print("Imagen recibida y guardada en Redis")
 
-
-
-                                # Descargar el archivo desde la URL
-                                file_response = requests.get(file_url, headers=headers)
+                                # # Descargar el archivo desde la URL
+                                # file_response = requests.get(file_url, headers=headers)
                                 
-                                if file_response.status_code != 200:
-                                    print(f"Error al descargar la imagen: {file_response.status_code}")
+                                # if file_response.status_code != 200:
+                                #     print(f"Error al descargar la imagen: {file_response.status_code}")
                                     
                                
                                     
-                                path = "uploads/"
-                                filename = path+filename
-                                # Guardar la imagen en el servidor
-                                with open(filename, "wb") as f:
-                                    f.write(file_response.content)
-                                print("Imagen descargada y guardada")
+                                # path = "uploads/"
+                                # filename = path+filename
+                                # # Guardar la imagen en el servidor
+                                # with open(filename, "wb") as f:
+                                #     f.write(file_response.content)
+                                # print("Imagen descargada y guardada")
                                     
                             else:
                                 print(f"Error al obtener la URL del archivo: {media_response.status_code}")
