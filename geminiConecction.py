@@ -1,5 +1,6 @@
 import google.generativeai as genai
 from PIL import Image
+import json
 
 
 genai.configure(api_key="AIzaSyATWEAxTXNCLxJ2hjy8Dcoi_Ovsy7ALmkQ")
@@ -24,8 +25,23 @@ model = genai.GenerativeModel("gemini-1.5-flash", system_instruction=instruction
 
 def enviarIA(prompt, imagen):
     image = Image.open(imagen)
-    response = model.generate_content(prompt, image=image)
+    responseIa = model.generate_content([prompt, image])
+    response = responseIa.text.strip()
     print(response)
+    
+    # Eliminar los delimitadores de código
+    if response.startswith("```json"):
+        response = response[7:]  # Eliminar ```json del inicio
+    if response.endswith("```"):
+        response = response[:-3]  # Eliminar ``` del final
+    
+    try:
+        json_response = json.loads(response)
+        return json_response
+    except json.JSONDecodeError as e:
+        print("Error al decodificar JSON:", e)
+        print("Respuesta recibida:", response)
+        return None
+    
    
-   
-enviarIA("", "/uploads/573134916425_1274025340569878.jpeg")
+
