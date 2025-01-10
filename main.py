@@ -106,6 +106,8 @@ async def webhook(request: Request):
                              # Si el mensaje contiene una imagen
                             image_info = message["image"]
                             media_id = image_info["id"]
+                            extention= image_info["mime_type"].split("/")[1]
+                            filename = f"{sender_number}_{message_body}_{media_id}.{extention}"
                             print("IMAGE ID: "+media_id)
                             
                              # Obtener la URL para descargar el archivo de medios
@@ -142,7 +144,7 @@ async def webhook(request: Request):
                                
                                     
                                 path = "uploads/"
-                                filename = path+"received_image.jpg"
+                                filename = path+filename
                                 # Guardar la imagen en el servidor
                                 with open(filename, "wb") as f:
                                     f.write(file_response.content)
