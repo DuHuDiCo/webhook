@@ -132,9 +132,11 @@ async def webhook(request: Request):
                                 file_url = media_data["url"]
                                 print(file_url)
 
+
+                                image_url = {"url": file_url}
                                 
                                 
-                                redisConection.guardar_datos_en_redis(phone_number_id, "image", file_url)
+                                redisConection.guardar_datos_en_redis(phone_number_id, "image", image_url)
                                 print("Imagen recibida y guardada en Redis")
 
                                 # # Descargar el archivo desde la URL
