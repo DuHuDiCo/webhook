@@ -129,14 +129,13 @@ async def webhook(request: Request):
                                 file_url = media_data["url"]
                                 print(file_url)
 
-                                 # Obtener la URL para descargar el archivo de medios
-                                download_file_url = f"https://graph.facebook.com/v21.0/{file_url}"
+                                
                                 
 
 
 
                                 # Descargar el archivo desde la URL
-                                file_response = requests.get(download_file_url, headers=headers)
+                                file_response = requests.get(file_url, headers=headers)
                                 
                                 if file_response.status_code != 200:
                                     print(f"Error al descargar la imagen: {file_response.status_code}")
