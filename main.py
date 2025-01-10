@@ -99,8 +99,8 @@ async def webhook(request: Request):
                     for message in messages:
                         sender_number = message.get('from')
                         message_body = message.get('text', {}).get('body')
-                        if not message_body:
-                            message_body = message.get('image', {})
+                        # if not message_body:
+                        #     message_body = message.get('image', {})
                         phone_number_id = value.get('metadata', {}).get('phone_number_id')
                         
                         
@@ -109,7 +109,7 @@ async def webhook(request: Request):
                             print(message_body)
                             image_info =  message.get('image', {})
                             media_id = image_info.get("id")
-                            extention= image_info.get("mime_type").split("/")[1]
+                            # extention= image_info.get("mime_type").split("/")[1]
                             # filename = f"{sender_number}_{message_body}_{media_id}.{extention}"
                             print("IMAGE ID: "+media_id)
                             
