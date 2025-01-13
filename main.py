@@ -212,7 +212,7 @@ async def webhook(request: Request):
                                         print(redisConection.obtener_datos_de_redis(phone_number_id))
                                         return  
                                     else:
-                                        enviarMensaje("El número de documento ingresado no es válido. Por favor verifica y vuelve a ingresarlo.", sender_number, phone_number_id)
+                                        enviarMensaje("El número de documento o el nombre del banco ingresado no es válido. Por favor verifica y vuelve a ingresarlo.", sender_number, phone_number_id)
                             
                                     
                                
