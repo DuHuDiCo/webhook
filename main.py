@@ -156,7 +156,8 @@ async def webhook(request: Request):
                                
 
                                 datosIA = geminiConecctionImage.enviarIA("imagen", filename)
-                                
+                                compro = {"comprobante": datosIA}
+                                redisConection.guardar_datos_en_redis(phone_number_id, "comprobante", compro)
                                 
                                 datosRedis = redisConection.obtener_datos_de_redis(phone_number_id)
                                 
@@ -164,16 +165,10 @@ async def webhook(request: Request):
                                     enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Acabas de ingresar el comprobante de pago, por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id)
                                     return
                                 
-                                compro = {"comprobante": datosIA}
-                                redisConection.guardar_datos_en_redis(phone_number_id, "comprobante", compro)
+                                
                                 enviarMensaje("Gracias por enviar tu comprobante de pago. Por favor ingresa el nombre del banco donde realizaste el pago o la transferencia.", sender_number, phone_number_id)
 
-                                
-                                
-                                
-                                
-
-                                
+                                    
                                     
                             else:
                                 enviarMensaje("Error al enviar el archivo. Por favor intenta de nuevo.", sender_number, phone_number_id)
