@@ -204,27 +204,25 @@ async def webhook(request: Request):
                                         enviarMensaje("Gracias por ingresar tu numero de documento. Por favor envianos el comprobante de pago para verificarlo.", sender_number, phone_number_id)
                                         return
                                     
-                                   
+                                else:
+                                    if validarBanco( message_body) :
+                                        print("Banco valido")
+                                        redisConection.guardar_datos_en_redis(phone_number_id, "banco", message_body)
+                                        enviarMensaje("Pago agregado correctamente. El tiempo de aplicacion del pago varia entre 3 a 5 dias habiles. Tu asesor de cartera te contactara y te enviara el recibo del pago realizado. CHAT FINALIZADO 😊", sender_number, phone_number_id)
+                                        print(redisConection.obtener_datos_de_redis(phone_number_id))
+                                        return  
+                                    else:
+                                        enviarMensaje("El número de documento ingresado no es válido. Por favor verifica y vuelve a ingresarlo.", sender_number, phone_number_id)
                             
                                     
                                
-                                banco = geminiConexionText.validarBanco(message_body)
-                                    
-                                if  banco == "true" or banco.lower() == message_body.lower():
-                                    print("Banco valido")
-                                    redisConection.guardar_datos_en_redis(phone_number_id, "banco", message_body)
-                                    enviarMensaje("Pago agregado correctamente. El tiempo de aplicacion del pago varia entre 3 a 5 dias habiles. Tu asesor de cartera te contactara y te enviara el recibo del pago realizado. CHAT FINALIZADO 😊", sender_number, phone_number_id)
-                                    print(redisConection.obtener_datos_de_redis(phone_number_id))
-                                    return
-                                else:
-                                    enviarMensaje("El banco ingresado no es valido. Por favor ingresa un banco valido.", sender_number, phone_number_id)
                                 
+                                    
+                              
                                 
                                 
                                     
-                                enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id)
                                 
-                                print(f"Mensaje recibido de {sender_number}: {message_body}")
 
                                 
                         
@@ -302,3 +300,11 @@ def validarNumeroDocumento(numero_documento):
         return True
     else:
         return False
+    
+    
+def validarBanco( message_body):    
+    bank = geminiConexionText.validarBanco(message_body)
+    if bank == "true" or bank.lower() == message_body.lower():
+        return True
+
+    return False
