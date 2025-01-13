@@ -31,7 +31,7 @@ def guardar_datos_en_redis(telefono,message_type,content):
         session_data["numero_recibo"] = content["comprobante"]["numero_recibo"]
         session_data["fecha_pago"] = content["comprobante"]["fecha_pago"]
         session_data["valor"] = content["comprobante"]["valor"]
-        session_data["banco"] = content["comprobante"]["banco"]
+        session_data["banco"] = content["comprobante"]["banco"] if content["comprobante"]["banco"] else ""
         
     
     # if not validate_comprobante(session_data["comprobante"]):

@@ -232,7 +232,7 @@ def guardarImagen(image_url, headers, nombre_archivo):
 def validarResultadosIA(content):
   
     # Validar cuáles son nulos
-    campos_nulos = {key: value for key, value in content.items() if value is None}
+    campos_nulos = {key: value for key, value in content.items() if value is None or value == ""}
     return campos_nulos
   
       
