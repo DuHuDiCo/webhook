@@ -188,8 +188,10 @@ async def webhook(request: Request):
                                     redisConection.guardar_datos_en_redis(phone_number_id, "text", message)
                                     enviarMensaje("Gracias por ingresar tu numero de documento. Por favor envianos el comprobante de pago para verificarlo.", sender_number, phone_number_id)
                                     return
+                                   
+                                banco = geminiConexionText.validarBanco(message_body)
                                     
-                                if geminiConexionText.validarBanco(message_body) == "true":
+                                if  banco == "true" or banco == message_body:
                                     print("Banco valido")
                                     redisConection.guardar_datos_en_redis(phone_number_id, "banco", message)
                                     return
