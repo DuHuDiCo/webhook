@@ -189,7 +189,7 @@ async def webhook(request: Request):
                                     
                                     datosRedis = redisConection.obtener_datos_de_redis(phone_number_id)
                                 
-                                    if not datosRedis["cedula"]:
+                                    if not datosRedis["cedula"] or datosRedis is None:
                                         print("Numero documento  valido")
                                         redisConection.guardar_datos_en_redis(phone_number_id, "text", message)
                                     
