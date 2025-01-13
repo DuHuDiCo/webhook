@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 import requests
 import json
-import redisConection, geminiConecctionImage, geminiConecctionText
+import redisConection, geminiConecctionImage, geminiConexionText
 
 
 app = FastAPI()
