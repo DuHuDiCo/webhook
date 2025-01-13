@@ -27,6 +27,7 @@ model = genai.GenerativeModel("gemini-1.5-flash", system_instruction=instruction
 
 def validarBanco(prompt):
     responseIa = model.generate_content(prompt)
-    response = responseIa.text.strip()
+    response = bool(responseIa.text.strip())
+    
     print(response)
     return response;
