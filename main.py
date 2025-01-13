@@ -188,11 +188,21 @@ async def webhook(request: Request):
                                 print(message)
                                 print(phone_number_id)
                                 
-                                
+                      
                                 ##VALIDAR NUMERO DOCUMENTO
                                 if  validarNumeroDocumento(message_body) :
+                                    
+                                    datosRedis = redisConection.obtener_datos_de_redis(phone_number_id)
+                                
+                                    if  datosRedis["cedula"]:
+                                        enviarMensaje("Gracias por ingresar el numero de documento, ahora por favor ingresa el nombre del banco donde realizaste el pago o la transferencia.", sender_number, phone_number_id)
+                                        return
+                                    
+                                    
                                     print("Numero documento  valido")
                                     redisConection.guardar_datos_en_redis(phone_number_id, "text", message)
+                                    
+                            
                                     enviarMensaje("Gracias por ingresar tu numero de documento. Por favor envianos el comprobante de pago para verificarlo.", sender_number, phone_number_id)
                                     return
                                 else:
