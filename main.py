@@ -152,9 +152,11 @@ async def webhook(request: Request):
                                 with open(filename, "wb") as f:
                                     f.write(file_response.content)
                                 print("Imagen descargada y guardada")
+                                
+                                compro = {"comprobante": datosIA}
 
                                 datosIA = geminiConecction.enviarIA("imagen", filename)
-                                redisConection.guardar_datos_en_redis(phone_number_id, "comprobante", datosIA)
+                                redisConection.guardar_datos_en_redis(phone_number_id, "comprobante", compro)
 
                                 
                                 
