@@ -207,9 +207,7 @@ async def webhook(request: Request):
                                    
                             
                                     
-                                else:
-                                    enviarMensaje("El numero de documento ingresado no es valido. Por favor ingresa un numero valido.", sender_number, phone_number_id)
-                                    
+                               
                                 banco = geminiConexionText.validarBanco(message_body)
                                     
                                 if  banco == "true" or banco.lower() == message_body.lower():
