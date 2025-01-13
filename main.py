@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 import requests
 import json
-import redisConection, geminiConecctionImage
+import redisConection, geminiConecctionImage, geminiConecctionText
 
 
 app = FastAPI()
@@ -41,7 +41,7 @@ class WebhookPayload(BaseModel):
     value: Value
 
 
-expected_token = "EAAXRz1H2U84BOZCMD5eSxuQSxYXApe673huUWwm3figOtk0DRudDJb3YCjBclXIWzjgb4F4RMMsnymRPs6nam73JAkt6AGpIClkFESlZCVpcp3wpLdo87Rtf6gDL8AuqxrmS1HMFwhhPSddyoNzl8PNO550t67OL7S9aPlrt9mD3Am1HnZARfQ2YongdIWSZCTPB2qedbSXv4j8BCGCSZCNZCGnUrQZBDKSvwMzuj7c0QZDZD"
+expected_token = "EAAXRz1H2U84BO5VU70F9PJXdsUSa3fuL22zL1lM1PUEcayE30wzNEyyjSNEP0yqR5Y4NTyKs7h4SgusUXXRYQTBqlfhUKvKyznSLNkDSxi3wjnDROgHOKjUbYFsx0TKDUwtxh2kBZBuZBbCZCBv5lLiMc4n48Ua3r6gpSUoAQXuEtl9MOSWgHsMWkuG6uLsQ8oKPBBtF1vsuvFcmEEf9bYPxnL4jIsyUdHrVXFwLwZDZD"
 
 
 
@@ -156,20 +156,11 @@ async def webhook(request: Request):
                                
 
                                 datosIA = geminiConecctionImage.enviarIA("imagen", filename)
-                                nulos = validarResultadosIA(datosIA)
-                                if nulos:
-                                    
-                                    compro = {"comprobante": datosIA}
-                                    redisConection.guardar_datos_en_redis(phone_number_id, "comprobante", compro)
-                                    print("Datos nulos:", nulos)
-                                    
-                                    
-                                    enviarMensaje("POR FAVOR PROPORCIONA LOS SIGUIENTES DATOS: "+str(nulos), sender_number, phone_number_id)
-                                    
-                                    return
+                                                           
                                 
                                 compro = {"comprobante": datosIA}
                                 redisConection.guardar_datos_en_redis(phone_number_id, "comprobante", compro)
+                                enviarMensaje("Gracias por enviar tu comprobante de pago. Por favor ingresa el nombre del banco donde realizaste el pago o la transferencia.", sender_number, phone_number_id)
 
                                 
                                 
@@ -192,12 +183,21 @@ async def webhook(request: Request):
                                 
                                 
                                 ##VALIDAR NUMERO DOCUMENTO
-                                if not validarNumeroDocumento(message_body) :
-                                    print("Numero documento no valido")
-                                    return;
+                                if  validarNumeroDocumento(message_body) :
+                                    print("Numero documento  valido")
+                                    redisConection.guardar_datos_en_redis(phone_number_id, "text", message)
+                                    enviarMensaje("Gracias por ingresar tu numero de documento. Por favor envianos el comprobante de pago para verificarlo.", sender_number, phone_number_id)
+                                    return
+                                    
+                                if geminiConecctionText.validarBanco(message_body):
+                                    print("Banco valido")
+                                    redisConection.guardar_datos_en_redis(phone_number_id, "banco", message)
+                                    return
+                                    
+                                    
+                                enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id)
                                 
                                 
-                                redisConection.guardar_datos_en_redis(phone_number_id, "text", message)
                                 
                                 
                                 

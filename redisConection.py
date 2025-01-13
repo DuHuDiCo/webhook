@@ -33,7 +33,8 @@ def guardar_datos_en_redis(telefono,message_type,content):
         session_data["valor"] = content["comprobante"]["valor"]
         session_data["banco"] = content["comprobante"]["banco"] if content["comprobante"]["banco"] else ""
         
-    
+    if message_type == "banco":
+        session_data["banco"] = content["comprobante"]["banco"] if content["comprobante"]["banco"] else ""
     # if not validate_comprobante(session_data["comprobante"]):
     #     return None;
     
