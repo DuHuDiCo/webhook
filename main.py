@@ -156,6 +156,10 @@ async def webhook(request: Request):
                                
 
                                 datosIA = geminiConecction.enviarIA("imagen", filename)
+                                nulos = validarResultadosIA(datosIA)
+                                if nulos:
+                                    print("Datos nulos:", nulos)
+                                    return
                                 
                                 compro = {"comprobante": datosIA}
                                 redisConection.guardar_datos_en_redis(phone_number_id, "comprobante", compro)
@@ -242,3 +246,12 @@ def guardarImagen(image_url, headers, nombre_archivo):
     with open(filename, "wb") as f:
         f.write(file_response.content)
     print("Imagen descargada y guardada")
+    
+    
+def validarResultadosIA(content):
+  
+    # Validar cuáles son nulos
+    campos_nulos = {key: value for key, value in content.items() if value is None}
+    return campos_nulos
+  
+      

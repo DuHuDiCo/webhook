@@ -12,7 +12,6 @@ instruction = """Eres un modelo especializado en procesar imágenes de recibos d
 
 "fecha_pago": La fecha del pago en formato YYYY-MM-DD.
 
-"numero_aprobacion": El número de aprobación (si existe).
 
 "valor": El monto pagado.
 
