@@ -28,6 +28,11 @@ def guardar_datos_en_redis(telefono,message_type,content):
         session_data["url"] = content["url"]
     
     if message_type == "comprobante":
+        
+        
+        
+        
+        
         session_data["numero_recibo"] = content["comprobante"]["numero_recibo"]
         session_data["fecha_pago"] = content["comprobante"]["fecha_pago"]
         session_data["valor"] = content["comprobante"]["valor"]

@@ -104,6 +104,11 @@ async def webhook(request: Request):
                         phone_number_id = value.get('metadata', {}).get('phone_number_id')
                         
                         
+                        
+                        
+                        
+                        
+                        
                         if "image" in message:
                              # Si el mensaje contiene una imagen
                             print(message_body)
@@ -152,11 +157,24 @@ async def webhook(request: Request):
                                 with open(filename, "wb") as f:
                                     f.write(file_response.content)
                                 print("Imagen descargada y guardada")
+                               
+                               
                                 
+                               
                                
 
                                 datosIA = geminiConecctionImage.enviarIA("imagen", filename)
                                 compro = {"comprobante": datosIA}
+                                
+                                
+                                datosValid = redisConection.obtener_datos_de_redis(phone_number_id) 
+                               
+                                if not datosValid is None:
+                                    if datosValid["numero_recibo"] == datosIA["numero_recibo"]:
+                                        enviarMensaje("Ya existe un pago con ese numero de recibo. Por favor ingresa un pago valido.", sender_number, phone_number_id)
+                                        return
+                                
+                                
                                 redisConection.guardar_datos_en_redis(phone_number_id, "comprobante", compro)
                                 
                                 datosRedis = redisConection.obtener_datos_de_redis(phone_number_id)
