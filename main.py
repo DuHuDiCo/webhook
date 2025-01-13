@@ -158,7 +158,11 @@ async def webhook(request: Request):
                                 datosIA = geminiConecction.enviarIA("imagen", filename)
                                 nulos = validarResultadosIA(datosIA)
                                 if nulos:
+                                    
+                                    compro = {"comprobante": datosIA}
+                                    redisConection.guardar_datos_en_redis(phone_number_id, "comprobante", compro)
                                     print("Datos nulos:", nulos)
+                                    
                                     
                                     enviarMensaje("POR FAVOR PROPORCIONA LOS SIGUIENTES DATOS: "+str(nulos), sender_number, phone_number_id)
                                     
