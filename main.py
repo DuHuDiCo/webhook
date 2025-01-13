@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 import requests
 import json
-import redisConection, geminiConecction
+import redisConection, geminiConecctionImage
 
 
 app = FastAPI()
@@ -155,7 +155,7 @@ async def webhook(request: Request):
                                 
                                
 
-                                datosIA = geminiConecction.enviarIA("imagen", filename)
+                                datosIA = geminiConecctionImage.enviarIA("imagen", filename)
                                 nulos = validarResultadosIA(datosIA)
                                 if nulos:
                                     
@@ -189,6 +189,13 @@ async def webhook(request: Request):
                                 message= {"text": message_body}
                                 print(message)
                                 print(phone_number_id)
+                                
+                                
+                                ##VALIDAR NUMERO DOCUMENTO
+                                if not validarNumeroDocumento(message_body) :
+                                    print("Numero documento no valido")
+                                    return;
+                                
                                 
                                 redisConection.guardar_datos_en_redis(phone_number_id, "text", message)
                                 
@@ -265,3 +272,10 @@ def enviarMensaje(mensaje, number, phone_number_id):
         print("Mensaje enviado exitosamente.")
     else:
         print(f"Error al enviar el mensaje: {response.text}")  
+        
+        
+def validarNumeroDocumento(numero_documento):
+    if len(numero_documento) >= 6 and len(numero_documento) <= 10 and numero_documento.isdigit():
+        return True
+    else:
+        return False
