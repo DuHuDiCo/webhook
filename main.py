@@ -191,7 +191,7 @@ async def webhook(request: Request):
                                    
                                 banco = geminiConexionText.validarBanco(message_body)
                                     
-                                if  banco == "true" or banco.ignorecase() == message_body.ignorecase():
+                                if  banco == "true" or banco.lower() == message_body.lower():
                                     print("Banco valido")
                                     redisConection.guardar_datos_en_redis(phone_number_id, "banco", message)
                                     return
