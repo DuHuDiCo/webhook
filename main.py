@@ -238,14 +238,14 @@ def validarResultadosIA(content):
       
 def enviarMensaje(mensaje, number, phone_number_id):
     # Preparar el mensaje de respuesta
-    response_message = "Mensaje recibido con éxito"
+    
 
     data = {
         "messaging_product": "whatsapp",
         "to": number,
         "type": "text",
         "text": {
-            "body": response_message
+            "body": mensaje
         }
     }
 
