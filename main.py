@@ -130,6 +130,7 @@ async def webhook(request: Request):
                             if media_response.status_code == 200:
                                 media_data = media_response.json()
                                 file_url = media_data["url"]
+                                image_url = {"url": file_url}
                                 print(file_url)
                                 redisConection.guardar_datos_en_redis(phone_number_id, "image", image_url)
                                 guardarImagen(file_url, headers, filename)
@@ -138,7 +139,7 @@ async def webhook(request: Request):
                                 datosIA = geminiConecction.enviarIA("imagen", file_url)
                                 redisConection.guardar_datos_en_redis(phone_number_id, "comprobante", datosIA)
 
-                                image_url = {"url": file_url}
+                                
                                 
                                 
                                 
