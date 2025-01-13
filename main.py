@@ -135,8 +135,25 @@ async def webhook(request: Request):
                                 redisConection.guardar_datos_en_redis(phone_number_id, "image", image_url)
                                 guardarImagen(file_url, headers, filename)
                                 print("Imagen recibida y guardada en Redis")
+                                
+                                
+                                
+                                # Descargar el archivo desde la URL
+                                file_response = requests.get(file_url, headers=headers)
+                                
+                                if file_response.status_code != 200:
+                                    print(f"Error al descargar la imagen: {file_response.status_code}")
+                                    
+                               
+                                    
+                                path = "uploads/"
+                                filename = path+filename
+                                # Guardar la imagen en el servidor
+                                with open(filename, "wb") as f:
+                                    f.write(file_response.content)
+                                print("Imagen descargada y guardada")
 
-                                datosIA = geminiConecction.enviarIA("imagen", file_url)
+                                datosIA = geminiConecction.enviarIA("imagen", filename)
                                 redisConection.guardar_datos_en_redis(phone_number_id, "comprobante", datosIA)
 
                                 
@@ -144,20 +161,7 @@ async def webhook(request: Request):
                                 
                                 
 
-                                # # Descargar el archivo desde la URL
-                                # file_response = requests.get(file_url, headers=headers)
                                 
-                                # if file_response.status_code != 200:
-                                #     print(f"Error al descargar la imagen: {file_response.status_code}")
-                                    
-                               
-                                    
-                                # path = "uploads/"
-                                # filename = path+filename
-                                # # Guardar la imagen en el servidor
-                                # with open(filename, "wb") as f:
-                                #     f.write(file_response.content)
-                                # print("Imagen descargada y guardada")
                                     
                             else:
                                 print(f"Error al obtener la URL del archivo: {media_response.status_code}")
