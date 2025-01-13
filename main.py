@@ -159,6 +159,9 @@ async def webhook(request: Request):
                                 nulos = validarResultadosIA(datosIA)
                                 if nulos:
                                     print("Datos nulos:", nulos)
+                                    
+                                    enviarMensaje("POR FAVOR PROPORCIONA LOS SIGUIENTES DATOS: "+str(nulos), sender_number, phone_number_id)
+                                    
                                     return
                                 
                                 compro = {"comprobante": datosIA}
@@ -191,34 +194,8 @@ async def webhook(request: Request):
 
                                 
                         
-                        # Preparar el mensaje de respuesta
-                        response_message = "Mensaje recibido con éxito"
-
-                        data = {
-                            "messaging_product": "whatsapp",
-                            "to": sender_number,
-                            "type": "text",
-                            "text": {
-                                "body": response_message
-                            }
-                        }
-
-                        # Enviar la respuesta usando la API de WhatsApp Business
-                        url = f"https://graph.facebook.com/v21.0/{phone_number_id}/messages"
-                        headers = {
-                            "Authorization": f"Bearer {expected_token}",
-                            "Content-Type": "application/json"
-                        }
-
-                        response = requests.post(url, headers=headers, data=json.dumps(data))
-
-                        if response.status_code == 200:
-                            response = redisConection.obtener_datos_de_redis(phone_number_id)
-                            
-                            print(response)
-                            print("Mensaje enviado exitosamente.")
-                        else:
-                            print(f"Error al enviar el mensaje: {response.text}")        
+                        # # Enviar el mensaje a Meta
+                        # enviarMensaje(response_message, sender_number)
 
         # Responder a Meta que el evento fue recibido correctamente
         return JSONResponse(content={"status": "EVENT_RECEIVED"}, status_code=200)
@@ -255,3 +232,32 @@ def validarResultadosIA(content):
     return campos_nulos
   
       
+def enviarMensaje(mensaje, number, phone_number_id):
+    # Preparar el mensaje de respuesta
+    response_message = "Mensaje recibido con éxito"
+
+    data = {
+        "messaging_product": "whatsapp",
+        "to": number,
+        "type": "text",
+        "text": {
+            "body": response_message
+        }
+    }
+
+    # Enviar la respuesta usando la API de WhatsApp Business
+    url = f"https://graph.facebook.com/v21.0/{phone_number_id}/messages"
+    headers = {
+        "Authorization": f"Bearer {expected_token}",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+
+    if response.status_code == 200:
+        response = redisConection.obtener_datos_de_redis(phone_number_id)
+        
+        print(response)
+        print("Mensaje enviado exitosamente.")
+    else:
+        print(f"Error al enviar el mensaje: {response.text}")  
