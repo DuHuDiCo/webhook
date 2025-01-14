@@ -364,7 +364,10 @@ def iniciarSession():
         "username": secret.get("username"),
         "password": secret.get("password")
     }
-    response = requests.post(url,  data=json.dumps(body))
+    headers = {
+        "Content-Type": "application/json"
+    }
+    response = requests.post(url,  headers=headers, data=json.dumps(body))
     print("respuesta de 171")
     print(response.json())
     return  
