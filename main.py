@@ -244,7 +244,8 @@ async def webhook(request: Request):
                                     print("Banco valido")
                                     redisConection.guardar_datos_en_redis(phone_number_id, "banco", message_body)
                                     enviarMensaje("Pago agregado correctamente. El tiempo de aplicacion del pago varia entre 3 a 5 dias habiles. Tu asesor de cartera te contactara y te enviara el recibo del pago realizado. CHAT FINALIZADO 😊", sender_number, phone_number_id)
-                                    print(redisConection.obtener_datos_de_redis(phone_number_id))
+                                    datos = redisConection.obtener_datos_de_redis(phone_number_id)
+                                    enviarDatos(datos)
                                     return  
                                 
                                 
