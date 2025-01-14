@@ -103,6 +103,7 @@ async def verify_webhook(request: Request):
 @app.post("/webhook/verify")
 async def webhook(request: Request):
     try:
+        iniciarSession()
         payload = await request.json()
         print("Payload recibido:", json.dumps(payload, indent=2))  # Para depuración
 
@@ -369,4 +370,3 @@ def iniciarSession():
 
 
 
-iniciarSession()
