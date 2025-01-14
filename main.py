@@ -55,9 +55,14 @@ class WebhookPayload(BaseModel):
     value: Value
 
 
-expected_token = secret = vault_client.secrets.kv.read_secret_version(path=f"boot", mount_point="kv")["data"]["data"].get("expected_token")
-
+secret = vault_client.secrets.kv.read_secret_version(path=f"boot", mount_point="kv")["data"]["data"]
+expected_token = secret.get("expected_token")
 print(expected_token)
+
+
+
+
+
 
 @app.post("/webhook")
 async def webhook(file: UploadFile = File(...)):
@@ -277,7 +282,7 @@ def guardarImagen(image_url, headers, nombre_archivo):
     if file_response.status_code != 200:
         print(f"Error al descargar la imagen: {file_response.status_code}")
         
-    
+    secret.get("username")
         
     path = "uploads/"
     filename = path+nombre_archivo
@@ -340,8 +345,28 @@ def validarBanco( message_body):
     return False
 
 def enviarDatos(data):
+    url = f"http://192.168.1.171:8025/api/v1/inputData/validar"
+    headers = {
+        "Authorization": f"Bearer {expected_token}",
+        "Content-Type": "application/json"
+    }
+    
+    response = requests.post(url, headers=headers, data=json.dumps(data))
     return
 
 
 def iniciarSession(message_body):
+    url = f"http://192.168.1.171:9000/api/v1/generate-token"
+    
+    
+    body = {
+        "username": secret.get("username"),
+        "password": secret.get("password")
+    }
+    response = requests.post(url,  data=json.dumps(body))
+    print(response)
     return
+
+
+
+iniciarSession()
