@@ -355,7 +355,7 @@ def enviarDatos(data):
     return
 
 
-def iniciarSession(message_body):
+def iniciarSession():
     url = f"http://192.168.1.171:9000/api/v1/generate-token"
     
     
