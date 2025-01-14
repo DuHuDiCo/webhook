@@ -7,6 +7,9 @@ services:
       - "3000:3000"
     volumes:
       - ./uploads:/app/uploads
+    environment:
+      - VAULT_ADDR
+      - VAULT_TOKEN  
   redis:
     image: redis
     container_name: redis
