@@ -347,8 +347,11 @@ def validarBanco( message_body):
 
 def enviarDatos(data):
     url = f"http://192.168.1.171:8025/api/v1/inputData/validar"
+    
+    token = iniciarSession()
+    
     headers = {
-        "Authorization": f"Bearer {expected_token}",
+        "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
     }
     
@@ -368,9 +371,9 @@ def iniciarSession():
         "Content-Type": "application/json"
     }
     response = requests.post(url,  headers=headers, data=json.dumps(body))
-    print("respuesta de 171")
-    print(response.json())
-    return  
+    
+    response = response.json()
+    return  response["token"]
 
 
 
