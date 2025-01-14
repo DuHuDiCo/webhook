@@ -277,7 +277,7 @@ async def webhook(request: Request):
 
 
 def guardarImagen(image_url, headers, nombre_archivo):
-    # Descargar el archivo desde la URL
+    # Descargar el archivo desde la URLiniciarSession()
     file_response = requests.get(image_url, headers=headers)
     
     if file_response.status_code != 200:
@@ -295,7 +295,7 @@ def guardarImagen(image_url, headers, nombre_archivo):
     
 def validarResultadosIA(content):
   
-    # Validar cuáles son nulos
+    # Validar cuáles son nulosiniciarSession()
     campos_nulos = {key: value for key, value in content.items() if value is None or value == ""}
     return campos_nulos
   
@@ -365,8 +365,8 @@ def iniciarSession():
         "password": secret.get("password")
     }
     response = requests.post(url,  data=json.dumps(body))
-    print(response)
-    return
+    print(response.json())
+    return  
 
 
 
