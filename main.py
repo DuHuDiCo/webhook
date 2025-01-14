@@ -365,6 +365,7 @@ def iniciarSession():
         "password": secret.get("password")
     }
     response = requests.post(url,  data=json.dumps(body))
+    print("respuesta de 171")
     print(response.json())
     return  
 
