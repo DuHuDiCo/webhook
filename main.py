@@ -357,6 +357,7 @@ def enviarDatos(data):
     }
     
     response = requests.post(url, headers=headers, data=json.dumps(data))
+    print(response)
     return
 
 
