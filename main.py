@@ -55,7 +55,7 @@ class WebhookPayload(BaseModel):
     value: Value
 
 
-expected_token = secret = vault_client.secrets.kv.read_secret_version(path=f"boot", mount_point="kv")
+expected_token = secret = vault_client.secrets.kv.read_secret_version(path=f"boot", mount_point="kv")["data"]["data"].get("expected_token")
 
 print(expected_token)
 
