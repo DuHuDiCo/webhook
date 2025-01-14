@@ -5,9 +5,23 @@ from typing import List, Optional
 import requests
 import json
 import redisConection, geminiConecctionImage, geminiConexionText
+from fastapi import FastAPI, HTTPException
+from hvac import Client
+from decouple import config
+
+# Configuración de Vault
+VAULT_ADDR = config("VAULT_ADDR")
+VAULT_TOKEN = config("VAULT_TOKEN")
 
 
 app = FastAPI()
+
+
+# Conexión con Vault
+vault_client = Client(url=VAULT_ADDR, token=VAULT_TOKEN)
+
+
+
 # Definir las clases de Pydantic que coinciden con la estructura de los datos
 class Profile(BaseModel):
     name: str
@@ -41,9 +55,9 @@ class WebhookPayload(BaseModel):
     value: Value
 
 
-expected_token = "EAAXRz1H2U84BO7nhyM4ujhltkWeAlMQFj6RZBfG6Qs4O0SAcx5qiweiKnKihOR6hXYPUVjQ5ljp37w3nOjNWvF0sCRWm1BqAJEwJcUMe1LlIMhXvqgp5LqwA8AouqZALAIVZAiWUffZAyKK9a6Hm2ZCRHCWJtAUi46bEiXZB5ahaa3ZAyKWJwG5IImS3xTcTGRhy1ZBUrTVoQnmYkGUB5sBuIcv3ZAkrHTeOt1mtUl1DZAqAZDZD"
+expected_token = secret = vault_client.secrets.kv.read_secret_version(path=f"kv/boot/expected_token", mount_point="kv").data["data"]["value"]
 
-
+print(expected_token)
 
 @app.post("/webhook")
 async def webhook(file: UploadFile = File(...)):
@@ -324,3 +338,10 @@ def validarBanco( message_body):
         return True
 
     return False
+
+def enviarDatos(data):
+    return
+
+
+def iniciarSession(message_body):
+    return
