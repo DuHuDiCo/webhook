@@ -350,6 +350,7 @@ def enviarDatos(data):
     url = f"http://192.168.1.171:8025/api/v1/inputData/validar"
     
     token = iniciarSession()
+    print("token iniciado "+ token)
     
     headers = {
         "Authorization": f"Bearer {token}",
