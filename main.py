@@ -356,7 +356,7 @@ def enviarMensaje(mensaje, number, phone_number_id, message_id):
             "message_id": message_id
         }
         data["context"] = context
-
+    print(data)
     # Enviar la respuesta usando la API de WhatsApp Business
     url = f"https://graph.facebook.com/v21.0/{phone_number_id}/messages"
     headers = {
