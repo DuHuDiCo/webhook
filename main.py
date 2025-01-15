@@ -148,7 +148,7 @@ async def webhook(request: Request):
                         #     message_body = message.get('image', {})
                         phone_number_id = value.get('metadata', {}).get('phone_number_id')
                         
-                        sleep(2)
+                        
                         
                         confirmacionDeLectura(phone_number_id, message_id)
                         
@@ -458,6 +458,7 @@ def buscarCliente(cedula):
 
 
 def confirmacionDeLectura(phone_number_id, message_id):
+    sleep(2)
     url = f"https://graph.facebook.com/v21.0/{phone_number_id}/messages"
     headers = {
         "Authorization": f"Bearer {expected_token}",
@@ -469,3 +470,4 @@ def confirmacionDeLectura(phone_number_id, message_id):
         "status": "read",
         "message_id": message_id
     }
+    response = requests.put(url, headers=headers, data=json.dumps(body))
