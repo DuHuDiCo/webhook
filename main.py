@@ -351,7 +351,7 @@ def enviarMensaje(mensaje, number, phone_number_id, message_id):
         }
     }
     
-    if not message_id == None:
+    if  message_id != None:
         context ={
             "message_id": message_id
         }
