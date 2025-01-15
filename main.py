@@ -150,9 +150,6 @@ async def webhook(request: Request):
                         
                         
                         
-                        confirmacionDeLectura(phone_number_id, message_id)
-                        
-                        
                         
                         if "image" in message:
                              # Si el mensaje contiene una imagen
@@ -211,8 +208,7 @@ async def webhook(request: Request):
                                 datosIA = geminiConecctionImage.enviarIA("imagen", filename)
                                 
                                 if datosIA is None:
-                                    enviarMensaje("Error al procesar la imagen. Por favor intenta de nuevo.", sender_number, phone_number_id, message_id)
-                                    return
+                                    new_client = True
                                 
                                 
                                 compro = {"comprobante": datosIA}
@@ -279,7 +275,9 @@ async def webhook(request: Request):
                                     
                                     
                                     if  new_client:
-                                        enviarMensaje("Este pago fue rediriguido debido a un error o  nuevo cliente. Por favor ingresa el numero de documento del cliente.", sender_number, phone_number_id, message_id)
+                                        phone_number_id_redirect = secret.get("consingaPhoneId")
+                                        phone_number_redirect = secret.get("consignaNumber")
+                                        enviarMensajeFile("Este pago fue redirigido debido a un error o  nuevo cliente. Por favor ingresa el numero de documento del cliente.", phone_number_redirect, phone_number_id_redirect,datos["url"], media_id)
                                         return
                                     
                                     enviarDatos(datos)
@@ -380,14 +378,14 @@ def enviarMensaje(mensaje, number, phone_number_id, message_id):
         
 
 
-def enviarMensajeFile(number, phone_number_id, url, media_id):
+def enviarMensajeFile(message, number, phone_number_id, url, media_id):
     data = {
         "messaging_product": "whatsapp",
         "to": number,
         "type": "text",
         "image": {
             "id": media_id,
-            "caption":  "Imagen de comprobante de pago"
+            "caption":  message
         }
     }
 
