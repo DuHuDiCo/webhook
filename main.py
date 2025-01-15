@@ -276,12 +276,12 @@ async def webhook(request: Request):
                                     datos = redisConection.obtener_datos_de_redis(phone_number_id)
                                     
                                     
-                                    if  new_client:
-                                        phone_number_id_redirect = secret.get("consingaPhoneId")
-                                        phone_number_redirect = secret.get("consignaNumber")
-                                        enviarMensajeFile("Este pago fue redirigido debido a un error o  nuevo cliente. Por favor ingresa el numero de documento del cliente.", phone_number_redirect, phone_number_id_redirect,datos["url"], media_id)
-                                        print("MENSAJE A CAROLINA ENVIADO")
-                                        return
+                                    # if  new_client:
+                                    #     phone_number_id_redirect = secret.get("consingaPhoneId")
+                                    #     phone_number_redirect = secret.get("consignaNumber")
+                                    #     enviarMensajeFile("Este pago fue redirigido debido a un error o  nuevo cliente. Por favor ingresa el numero de documento del cliente.", phone_number_redirect, phone_number_id_redirect,datos["url"], media_id)
+                                    #     print("MENSAJE A CAROLINA ENVIADO")
+                                    #     return
                                     
                                     enviarDatos(datos)
                                     return  
@@ -289,12 +289,18 @@ async def webhook(request: Request):
                                 
                                 enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id, message_id)
                             
-                                print(f"Mensaje recibido de {sender_number}: {message_body}")    
+                                print(f"Mensaje recibido de {sender_number}: {message_body}")
+                                return    
                                
                                 
                                     
                               
-                                
+                            if  new_client:
+                                phone_number_id_redirect = secret.get("consingaPhoneId")
+                                phone_number_redirect = secret.get("consignaNumber")
+                                enviarMensajeFile("Este pago fue redirigido debido a un error o  nuevo cliente. Por favor ingresa el numero de documento del cliente.", phone_number_redirect, phone_number_id_redirect,datos["url"], media_id)
+                                print("MENSAJE A CAROLINA ENVIADO")
+                                return    
                                 
                                     
                                 
