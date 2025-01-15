@@ -151,7 +151,7 @@ async def webhook(request: Request):
                         
                         
                         confirmacionDeLectura(phone_number_id, message_id)
-                        sleep(1)
+                        sleep(2)
                         
                         
                         if "image" in message:
