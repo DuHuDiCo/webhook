@@ -211,7 +211,7 @@ async def webhook(request: Request):
                                     
                                     print(validarResultadosIA(datosIA))
                                     
-                                    if not validarResultadosIA(datosIA):
+                                    if  validarResultadosIA(datosIA):
                                         new_client = True
                                         
                                     else:
