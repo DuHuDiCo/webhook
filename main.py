@@ -301,10 +301,10 @@ async def webhook(request: Request):
                                 
                                     
                         if  new_client:
-                            phone_number_id_redirect = secret.get("consingaPhoneId")
+                            
                             phone_number_redirect = secret.get("consignaNumber")
                             datos = redisConection.obtener_datos_de_redis(phone_number_id)
-                            enviarMensajeFile("Este pago fue redirigido debido a un error o  nuevo cliente. Por favor ingresa el numero de documento del cliente.", phone_number_redirect, phone_number_id_redirect,datos["url"], media_id)
+                            enviarMensajeFile("Este pago fue redirigido debido a un error o  nuevo cliente. Por favor ingresa el numero de documento del cliente.", phone_number_redirect, phone_number_id,datos["url"], media_id)
                             print("MENSAJE A CAROLINA ENVIADO")
                             return          
 
@@ -411,6 +411,7 @@ def enviarMensajeFile(message, number, phone_number_id, url_file, media_id):
     #     "type": (None, "image/jpeg")  # Cambia el tipo si usas PNG o GIF
     # }
     response = requests.post(url, headers=headers, data=json.dumps(data))
+    return response
 
 
         
