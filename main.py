@@ -238,7 +238,7 @@ async def webhook(request: Request):
                                 
                                         enviarMensaje("Gracias por enviar tu comprobante de pago. Por favor ingresa el nombre del banco donde realizaste el pago o la transferencia.", sender_number, phone_number_id,message_id)
 
-                                    
+                                enviarMensaje("Pago agregado correctamente. El tiempo de aplicacion del pago varia entre 3 a 5 dias habiles. Tu asesor de cartera te contactara y te enviara el recibo del pago realizado. CHAT FINALIZADO 😊", sender_number, phone_number_id, message_id)    
                                     
                             else:
                                 enviarMensaje("Error al enviar el archivo. Por favor intenta de nuevo.", sender_number, phone_number_id, message_id)
