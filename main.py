@@ -55,10 +55,32 @@ class WebhookPayload(BaseModel):
     value: Value
 
 
+
+def iniciarSession():
+    url = f"http://192.168.1.171:9000/api/v1/generate-token"
+    
+    
+    body = {
+        "username": secret.get("username"),
+        "password": secret.get("password")
+    }
+    headers = {
+        "Content-Type": "application/json"
+    }
+    response = requests.post(url,  headers=headers, data=json.dumps(body))
+    
+    response = response.json()
+    return  response["token"]
+
+
+
+
+
+token_backend = iniciarSession()
 secret = vault_client.secrets.kv.read_secret_version(path=f"boot", mount_point="kv")["data"]["data"]
 expected_token = secret.get("expected_token")
 print(expected_token)
-
+new_client = False
 
 
 
@@ -103,7 +125,7 @@ async def verify_webhook(request: Request):
 @app.post("/webhook/verify")
 async def webhook(request: Request):
     try:
-        iniciarSession()
+        
         payload = await request.json()
         print("Payload recibido:", json.dumps(payload, indent=2))  # Para depuración
 
@@ -184,6 +206,12 @@ async def webhook(request: Request):
                                
 
                                 datosIA = geminiConecctionImage.enviarIA("imagen", filename)
+                                
+                                if datosIA is None:
+                                    enviarMensaje("Error al procesar la imagen. Por favor intenta de nuevo.", sender_number, phone_number_id, media_id)
+                                    return
+                                
+                                
                                 compro = {"comprobante": datosIA}
                                 
                                 
@@ -191,7 +219,7 @@ async def webhook(request: Request):
                                
                                 if not datosValid is None:
                                     if datosValid["numero_recibo"] == datosIA["numero_recibo"]:
-                                        enviarMensaje("Ya existe un pago con ese numero de recibo. Por favor ingresa un pago valido.", sender_number, phone_number_id)
+                                        enviarMensaje("Ya existe un pago con ese numero de recibo. Por favor ingresa un pago valido.", sender_number, phone_number_id,media_id)
                                         return
                                 
                                 
@@ -200,16 +228,16 @@ async def webhook(request: Request):
                                 datosRedis = redisConection.obtener_datos_de_redis(phone_number_id)
                                 
                                 if not datosRedis["cedula"]:
-                                    enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Acabas de ingresar el comprobante de pago, por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id)
+                                    enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Acabas de ingresar el comprobante de pago, por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id, media_id)
                                     return
                                 
                                 
-                                enviarMensaje("Gracias por enviar tu comprobante de pago. Por favor ingresa el nombre del banco donde realizaste el pago o la transferencia.", sender_number, phone_number_id)
+                                enviarMensaje("Gracias por enviar tu comprobante de pago. Por favor ingresa el nombre del banco donde realizaste el pago o la transferencia.", sender_number, phone_number_id,media_id)
 
                                     
                                     
                             else:
-                                enviarMensaje("Error al enviar el archivo. Por favor intenta de nuevo.", sender_number, phone_number_id)
+                                enviarMensaje("Error al enviar el archivo. Por favor intenta de nuevo.", sender_number, phone_number_id, media_id)
                                 print(f"Error al obtener la URL del archivo: {media_response.status_code}")
                         
                         
@@ -225,31 +253,37 @@ async def webhook(request: Request):
                                 ##VALIDAR NUMERO DOCUMENTO
                                 if  validarNumeroDocumento(message_body) :
                                     
-                                    datosRedis = redisConection.obtener_datos_de_redis(phone_number_id)
+                                    client = buscarCliente(message_body)
                                     
+                                    redisConection.guardar_datos_en_redis(phone_number_id, "text", message)
                                     
-                                    if datosRedis is None:
-                                        redisConection.guardar_datos_en_redis(phone_number_id, "text", message)
-                                        enviarMensaje("Gracias por ingresar tu numero de documento. Por favor envianos el comprobante de pago para verificarlo.", sender_number, phone_number_id)
+                                    if  client is None:
+                                        new_client = True
                                         
                                         return
-                                        
-                                    else:
-                                        enviarMensaje("Gracias por ingresar el numero de documento, ahora por favor ingresa el nombre del banco donde realizaste el pago o la transferencia.", sender_number, phone_number_id)
-                                        return
+                                    
+                                    
+                                    
+                                    enviarMensaje("Gracias por ingresar tu numero de documento. Por favor envianos el comprobante de pago para verificarlo.", sender_number, phone_number_id ,media_id)
                                     
 
                                 
                                 if validarBanco( message_body) :
                                     print("Banco valido")
                                     redisConection.guardar_datos_en_redis(phone_number_id, "banco", message_body)
-                                    enviarMensaje("Pago agregado correctamente. El tiempo de aplicacion del pago varia entre 3 a 5 dias habiles. Tu asesor de cartera te contactara y te enviara el recibo del pago realizado. CHAT FINALIZADO 😊", sender_number, phone_number_id)
+                                    enviarMensaje("Pago agregado correctamente. El tiempo de aplicacion del pago varia entre 3 a 5 dias habiles. Tu asesor de cartera te contactara y te enviara el recibo del pago realizado. CHAT FINALIZADO 😊", sender_number, phone_number_id, media_id)
                                     datos = redisConection.obtener_datos_de_redis(phone_number_id)
+                                    
+                                    
+                                    if  new_client:
+                                        enviarMensaje("Este pago fue rediriguido debido a un error o  nuevo cliente. Por favor ingresa el numero de documento del cliente.", sender_number, phone_number_id, media_id)
+                                        return
+                                    
                                     enviarDatos(datos)
                                     return  
                                 
                                 
-                                enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id)
+                                enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id, media_id)
                             
                                 print(f"Mensaje recibido de {sender_number}: {message_body}")    
                                
@@ -301,18 +335,26 @@ def validarResultadosIA(content):
     return campos_nulos
   
       
-def enviarMensaje(mensaje, number, phone_number_id):
+def enviarMensaje(mensaje, number, phone_number_id, message_id):
     # Preparar el mensaje de respuesta
     
 
     data = {
         "messaging_product": "whatsapp",
+        "recipient_type": "individual",
         "to": number,
+        
         "type": "text",
         "text": {
             "body": mensaje
         }
     }
+    
+    if message_id:
+        context ={
+            "message_id": message_id
+        }
+        data["context"] = message_id
 
     # Enviar la respuesta usando la API de WhatsApp Business
     url = f"https://graph.facebook.com/v21.0/{phone_number_id}/messages"
@@ -331,6 +373,32 @@ def enviarMensaje(mensaje, number, phone_number_id):
     else:
         print(f"Error al enviar el mensaje: {response.text}")  
         
+
+
+def enviarMensajeFile(number, phone_number_id, url, media_id):
+    data = {
+        "messaging_product": "whatsapp",
+        "to": number,
+        "type": "text",
+        "image": {
+            "id": media_id,
+            "caption":  "Imagen de comprobante de pago"
+        }
+    }
+
+    # Enviar la respuesta usando la API de WhatsApp Business
+    url = f"https://graph.facebook.com/v21.0/{phone_number_id}/messages"
+    headers = {
+        "Authorization": f"Bearer {expected_token}",
+        "Content-Type": "application/json"
+    }
+    files = {
+        "file": open(url, "rb"),
+        "type": (None, "image/jpeg")  # Cambia el tipo si usas PNG o GIF
+    }
+    response = requests.post(url, headers=headers, files=files)
+
+
         
 def validarNumeroDocumento(numero_documento):
     if len(numero_documento) >= 6 and len(numero_documento) <= 10 and numero_documento.isdigit():
@@ -349,7 +417,7 @@ def validarBanco( message_body):
 def enviarDatos(data):
     url = f"http://192.168.1.171:8025/api/v1/inputData/validar"
     
-    token = iniciarSession()
+    token = token_backend
     print("token iniciado "+ token)
     
     headers = {
@@ -362,21 +430,25 @@ def enviarDatos(data):
     return
 
 
-def iniciarSession():
-    url = f"http://192.168.1.171:9000/api/v1/generate-token"
+def buscarCliente(cedula):
+    url = f"http://192.168.1.171:9000/api/v1/clientes/find/{cedula}"
+    token = token_backend
+    print("token iniciado "+ token)
     
-    
-    body = {
-        "username": secret.get("username"),
-        "password": secret.get("password")
-    }
     headers = {
+        "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
     }
-    response = requests.post(url,  headers=headers, data=json.dumps(body))
+    
+    response = requests.get(url, headers=headers)
+    exist = False
+    if response.status_code != 200:
+        return None;
     
     response = response.json()
-    return  response["token"]
-
+    exist = True    
+    cliente = {"exist": exist, "cliente": response["nombres"]+ " " + response["apellidos"]}
+    return cliente
+    
 
 
