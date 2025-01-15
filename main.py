@@ -81,7 +81,7 @@ def iniciarSession():
 secret = vault_client.secrets.kv.read_secret_version(path=f"boot", mount_point="kv")["data"]["data"]
 expected_token = secret.get("expected_token")
 print(expected_token)
-new_client = False
+
 token_backend = iniciarSession()
 
 
@@ -126,7 +126,7 @@ async def verify_webhook(request: Request):
 @app.post("/webhook/verify")
 async def webhook(request: Request):
     try:
-        
+        new_client = False
         payload = await request.json()
         print("Payload recibido:", json.dumps(payload, indent=2))  # Para depuración
 
@@ -398,7 +398,7 @@ def enviarMensajeFile(message, number, phone_number_id, url, media_id):
         "file": open(url, "rb"),
         "type": (None, "image/jpeg")  # Cambia el tipo si usas PNG o GIF
     }
-    response = requests.post(url, headers=headers, files=files)
+    response = requests.post(url, headers=headers, data=json.dumps(data))
 
 
         
