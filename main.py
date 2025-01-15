@@ -276,6 +276,7 @@ async def webhook(request: Request):
                                         phone_number_id_redirect = secret.get("consingaPhoneId")
                                         phone_number_redirect = secret.get("consignaNumber")
                                         enviarMensajeFile("Este pago fue redirigido debido a un error o  nuevo cliente. Por favor ingresa el numero de documento del cliente.", phone_number_redirect, phone_number_id_redirect,datos["url"], media_id)
+                                        print("MENSAJE A CAROLINA ENVIADO")
                                         return
                                     
                                     enviarDatos(datos)
