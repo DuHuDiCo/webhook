@@ -406,10 +406,10 @@ def enviarMensajeFile(message, number, phone_number_id, url_file, media_id):
         "Authorization": f"Bearer {expected_token}",
         "Content-Type": "application/json"
     }
-    files = {
-        "file": open(url_file, "rb"),
-        "type": (None, "image/jpeg")  # Cambia el tipo si usas PNG o GIF
-    }
+    # files = {
+    #     "file": open(url_file, "rb"),
+    #     "type": (None, "image/jpeg")  # Cambia el tipo si usas PNG o GIF
+    # }
     response = requests.post(url, headers=headers, data=json.dumps(data))
 
 
