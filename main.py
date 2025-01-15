@@ -304,7 +304,8 @@ async def webhook(request: Request):
                             
                             phone_number_redirect = secret.get("consignaNumber")
                             datos = redisConection.obtener_datos_de_redis(phone_number_id)
-                            enviarMensajeFile("Este pago fue redirigido debido a un error o  nuevo cliente. Por favor ingresa el numero de documento del cliente.", phone_number_redirect, phone_number_id,datos["url"], media_id)
+                            enviarMensajeFile("Este pago fue redirigido debido a un error o  nuevo cliente.", 
+                                              phone_number_redirect, phone_number_id,datos["url"], media_id)
                             print("MENSAJE A CAROLINA ENVIADO")
                             return          
 
@@ -392,11 +393,12 @@ def enviarMensaje(mensaje, number, phone_number_id, message_id):
 def enviarMensajeFile(message, number, phone_number_id, url_file, media_id):
     data = {
         "messaging_product": "whatsapp",
+        "recipient_type": "individual",
         "to": number,
-        "type": "text",
+        "type": "image",
         "image": {
             "id": media_id,
-            "caption":  message
+            "caption":  "Cedula: "+message
         }
     }
 
@@ -410,7 +412,10 @@ def enviarMensajeFile(message, number, phone_number_id, url_file, media_id):
     #     "file": open(url_file, "rb"),
     #     "type": (None, "image/jpeg")  # Cambia el tipo si usas PNG o GIF
     # }
+    print(data)
+    
     response = requests.post(url, headers=headers, data=json.dumps(data))
+    print(response)
     return response
 
 
