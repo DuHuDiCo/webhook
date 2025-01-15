@@ -140,7 +140,7 @@ async def webhook(request: Request):
 
                 if messages:
                     for message in messages:
-                        message_id = messages.get('message_id')
+                        message_id = message.get('message_id')
                         sender_number = message.get('from')
                         message_body = message.get('text', {}).get('body')
                         # if not message_body:
