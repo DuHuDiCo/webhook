@@ -136,7 +136,7 @@ async def webhook(request: Request):
             for change in changes:
                 value = change.get('value', {})
                 messages = value.get('messages', [])
-                message_id = value.get('message_id')
+                message_id = messages.get('message_id')
 
                 if messages:
                     for message in messages:
@@ -352,7 +352,7 @@ def enviarMensaje(mensaje, number, phone_number_id, message_id):
     }
     
     if  message_id != None:
-        print("ENTRO")
+        
         context ={
             "message_id": message_id
         }
