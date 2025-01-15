@@ -148,10 +148,10 @@ async def webhook(request: Request):
                         #     message_body = message.get('image', {})
                         phone_number_id = value.get('metadata', {}).get('phone_number_id')
                         
-                        
+                        sleep(2)
                         
                         confirmacionDeLectura(phone_number_id, message_id)
-                        sleep(2)
+                        
                         
                         
                         if "image" in message:
