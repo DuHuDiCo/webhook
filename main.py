@@ -389,7 +389,7 @@ def enviarMensaje(mensaje, number, phone_number_id, message_id):
         
 
 
-def enviarMensajeFile(message, number, phone_number_id, url, media_id):
+def enviarMensajeFile(message, number, phone_number_id, url_file, media_id):
     data = {
         "messaging_product": "whatsapp",
         "to": number,
@@ -407,7 +407,7 @@ def enviarMensajeFile(message, number, phone_number_id, url, media_id):
         "Content-Type": "application/json"
     }
     files = {
-        "file": open(url, "rb"),
+        "file": open(url_file, "rb"),
         "type": (None, "image/jpeg")  # Cambia el tipo si usas PNG o GIF
     }
     response = requests.post(url, headers=headers, data=json.dumps(data))
