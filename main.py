@@ -1,3 +1,4 @@
+from time import sleep
 from fastapi import FastAPI, File, UploadFile, HTTPException,Request
 from fastapi.responses import PlainTextResponse,JSONResponse
 from pydantic import BaseModel
@@ -149,8 +150,8 @@ async def webhook(request: Request):
                         
                         
                         
-                        
-                        
+                        confirmacionDeLectura(phone_number_id, message_id)
+                        sleep(1)
                         
                         
                         if "image" in message:
@@ -456,3 +457,15 @@ def buscarCliente(cedula):
     
 
 
+def confirmacionDeLectura(phone_number_id, message_id):
+    url = f"https://graph.facebook.com/v21.0/{phone_number_id}/messages"
+    headers = {
+        "Authorization": f"Bearer {expected_token}",
+        "Content-Type": "application/json"
+    }
+    
+    body ={
+        "messaging_product": "whatsapp",
+        "status": "read",
+        "message_id": message_id
+    }
