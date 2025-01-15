@@ -208,6 +208,9 @@ async def webhook(request: Request):
 
                                     datosIA = geminiConecctionImage.enviarIA("imagen", filename)
                                     
+                                    
+                                    print(validarResultadosIA(datosIA))
+                                    
                                     if not validarResultadosIA(datosIA):
                                         new_client = True
                                         
