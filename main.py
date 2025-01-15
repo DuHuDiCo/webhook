@@ -352,6 +352,7 @@ def enviarMensaje(mensaje, number, phone_number_id, message_id):
     }
     
     if  message_id != None:
+        print("ENTRO")
         context ={
             "message_id": message_id
         }
