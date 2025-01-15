@@ -136,6 +136,7 @@ async def webhook(request: Request):
             for change in changes:
                 value = change.get('value', {})
                 messages = value.get('messages', [])
+                message_id = value.get('message_id')
 
                 if messages:
                     for message in messages:
@@ -208,7 +209,7 @@ async def webhook(request: Request):
                                 datosIA = geminiConecctionImage.enviarIA("imagen", filename)
                                 
                                 if datosIA is None:
-                                    enviarMensaje("Error al procesar la imagen. Por favor intenta de nuevo.", sender_number, phone_number_id, media_id)
+                                    enviarMensaje("Error al procesar la imagen. Por favor intenta de nuevo.", sender_number, phone_number_id, message_id)
                                     return
                                 
                                 
@@ -219,7 +220,7 @@ async def webhook(request: Request):
                                
                                 if not datosValid is None:
                                     if datosValid["numero_recibo"] == datosIA["numero_recibo"]:
-                                        enviarMensaje("Ya existe un pago con ese numero de recibo. Por favor ingresa un pago valido.", sender_number, phone_number_id,media_id)
+                                        enviarMensaje("Ya existe un pago con ese numero de recibo. Por favor ingresa un pago valido.", sender_number, phone_number_id,message_id)
                                         return
                                 
                                 
@@ -228,16 +229,16 @@ async def webhook(request: Request):
                                 datosRedis = redisConection.obtener_datos_de_redis(phone_number_id)
                                 
                                 if not datosRedis["cedula"]:
-                                    enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Acabas de ingresar el comprobante de pago, por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id, media_id)
+                                    enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Acabas de ingresar el comprobante de pago, por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id, message_id)
                                     return
                                 
                                 
-                                enviarMensaje("Gracias por enviar tu comprobante de pago. Por favor ingresa el nombre del banco donde realizaste el pago o la transferencia.", sender_number, phone_number_id,media_id)
+                                enviarMensaje("Gracias por enviar tu comprobante de pago. Por favor ingresa el nombre del banco donde realizaste el pago o la transferencia.", sender_number, phone_number_id,message_id)
 
                                     
                                     
                             else:
-                                enviarMensaje("Error al enviar el archivo. Por favor intenta de nuevo.", sender_number, phone_number_id, media_id)
+                                enviarMensaje("Error al enviar el archivo. Por favor intenta de nuevo.", sender_number, phone_number_id, message_id)
                                 print(f"Error al obtener la URL del archivo: {media_response.status_code}")
                         
                         
@@ -264,26 +265,26 @@ async def webhook(request: Request):
                                     
                                     
                                     
-                                    enviarMensaje("Gracias por ingresar tu numero de documento. Por favor envianos el comprobante de pago para verificarlo.", sender_number, phone_number_id ,media_id)
+                                    enviarMensaje("Gracias por ingresar tu numero de documento. Por favor envianos el comprobante de pago para verificarlo.", sender_number, phone_number_id ,message_id)
                                     
 
                                 
                                 if validarBanco( message_body) :
                                     print("Banco valido")
                                     redisConection.guardar_datos_en_redis(phone_number_id, "banco", message_body)
-                                    enviarMensaje("Pago agregado correctamente. El tiempo de aplicacion del pago varia entre 3 a 5 dias habiles. Tu asesor de cartera te contactara y te enviara el recibo del pago realizado. CHAT FINALIZADO 😊", sender_number, phone_number_id, media_id)
+                                    enviarMensaje("Pago agregado correctamente. El tiempo de aplicacion del pago varia entre 3 a 5 dias habiles. Tu asesor de cartera te contactara y te enviara el recibo del pago realizado. CHAT FINALIZADO 😊", sender_number, phone_number_id, message_id)
                                     datos = redisConection.obtener_datos_de_redis(phone_number_id)
                                     
                                     
                                     if  new_client:
-                                        enviarMensaje("Este pago fue rediriguido debido a un error o  nuevo cliente. Por favor ingresa el numero de documento del cliente.", sender_number, phone_number_id, media_id)
+                                        enviarMensaje("Este pago fue rediriguido debido a un error o  nuevo cliente. Por favor ingresa el numero de documento del cliente.", sender_number, phone_number_id, message_id)
                                         return
                                     
                                     enviarDatos(datos)
                                     return  
                                 
                                 
-                                enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id, media_id)
+                                enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id, message_id)
                             
                                 print(f"Mensaje recibido de {sender_number}: {message_body}")    
                                
