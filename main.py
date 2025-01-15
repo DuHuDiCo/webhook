@@ -236,7 +236,7 @@ async def webhook(request: Request):
                                             return
                                 
                                 
-                                enviarMensaje("Gracias por enviar tu comprobante de pago. Por favor ingresa el nombre del banco donde realizaste el pago o la transferencia.", sender_number, phone_number_id,message_id)
+                                        enviarMensaje("Gracias por enviar tu comprobante de pago. Por favor ingresa el nombre del banco donde realizaste el pago o la transferencia.", sender_number, phone_number_id,message_id)
 
                                     
                                     
@@ -283,7 +283,9 @@ async def webhook(request: Request):
                                     #     print("MENSAJE A CAROLINA ENVIADO")
                                     #     return
                                     
-                                    enviarDatos(datos)
+                                    if not new_client:
+                                        enviarDatos(datos)
+                                        
                                     return  
                                 
                                 
@@ -295,15 +297,15 @@ async def webhook(request: Request):
                                 
                                     
                               
-                            if  new_client:
-                                phone_number_id_redirect = secret.get("consingaPhoneId")
-                                phone_number_redirect = secret.get("consignaNumber")
-                                enviarMensajeFile("Este pago fue redirigido debido a un error o  nuevo cliente. Por favor ingresa el numero de documento del cliente.", phone_number_redirect, phone_number_id_redirect,datos["url"], media_id)
-                                print("MENSAJE A CAROLINA ENVIADO")
-                                return    
+                            
                                 
                                     
-                                
+                        if  new_client:
+                            phone_number_id_redirect = secret.get("consingaPhoneId")
+                            phone_number_redirect = secret.get("consignaNumber")
+                            enviarMensajeFile("Este pago fue redirigido debido a un error o  nuevo cliente. Por favor ingresa el numero de documento del cliente.", phone_number_redirect, phone_number_id_redirect,datos["url"], media_id)
+                            print("MENSAJE A CAROLINA ENVIADO")
+                            return          
 
                                 
                         
