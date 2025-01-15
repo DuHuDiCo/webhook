@@ -76,12 +76,12 @@ def iniciarSession():
 
 
 
-token_backend = iniciarSession()
+
 secret = vault_client.secrets.kv.read_secret_version(path=f"boot", mount_point="kv")["data"]["data"]
 expected_token = secret.get("expected_token")
 print(expected_token)
 new_client = False
-
+token_backend = iniciarSession()
 
 
 
