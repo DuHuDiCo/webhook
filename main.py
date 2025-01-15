@@ -260,6 +260,7 @@ async def webhook(request: Request):
                                         new_client = True
  
                                     enviarMensaje("Gracias por ingresar tu numero de documento. Por favor envianos el comprobante de pago para verificarlo.", sender_number, phone_number_id ,message_id)
+                                    return
                                     
 
                                 
