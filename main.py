@@ -208,28 +208,29 @@ async def webhook(request: Request):
 
                                     datosIA = geminiConecctionImage.enviarIA("imagen", filename)
                                     
-                                    if datosIA is None:
+                                    if not validarResultadosIA(datosIA):
                                         new_client = True
+                                        
+                                    else:
                                     
+                                        compro = {"comprobante": datosIA}
+                                        
+                                        
+                                        datosValid = redisConection.obtener_datos_de_redis(phone_number_id) 
                                     
-                                    compro = {"comprobante": datosIA}
-                                    
-                                    
-                                    datosValid = redisConection.obtener_datos_de_redis(phone_number_id) 
-                                
-                                    if not datosValid is None:
-                                        if datosValid["numero_recibo"] == datosIA["numero_recibo"]:
-                                            enviarMensaje("Ya existe un pago con ese numero de recibo. Por favor ingresa un pago valido.", sender_number, phone_number_id,message_id)
+                                        if not datosValid is None:
+                                            if datosValid["numero_recibo"] == datosIA["numero_recibo"]:
+                                                enviarMensaje("Ya existe un pago con ese numero de recibo. Por favor ingresa un pago valido.", sender_number, phone_number_id,message_id)
+                                                return
+                                        
+                                        
+                                        redisConection.guardar_datos_en_redis(phone_number_id, "comprobante", compro)
+                                        
+                                        datosRedis = redisConection.obtener_datos_de_redis(phone_number_id)
+                                        
+                                        if not datosRedis["cedula"]:
+                                            enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Acabas de ingresar el comprobante de pago, por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id, message_id)
                                             return
-                                    
-                                    
-                                    redisConection.guardar_datos_en_redis(phone_number_id, "comprobante", compro)
-                                    
-                                    datosRedis = redisConection.obtener_datos_de_redis(phone_number_id)
-                                    
-                                    if not datosRedis["cedula"]:
-                                        enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Acabas de ingresar el comprobante de pago, por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id, message_id)
-                                        return
                                 
                                 
                                 enviarMensaje("Gracias por enviar tu comprobante de pago. Por favor ingresa el nombre del banco donde realizaste el pago o la transferencia.", sender_number, phone_number_id,message_id)
@@ -330,9 +331,8 @@ def guardarImagen(image_url, headers, nombre_archivo):
     
 def validarResultadosIA(content):
   
-    # Validar cuáles son nulosiniciarSession()
-    campos_nulos = {key: value for key, value in content.items() if value is None or value == ""}
-    return campos_nulos
+    # Verificar si hay campos nulos en el diccionario
+    return any(value is None or value == "" for value in content.values())
   
       
 def enviarMensaje(mensaje, number, phone_number_id, message_id):
