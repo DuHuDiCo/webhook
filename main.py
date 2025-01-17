@@ -147,15 +147,15 @@ async def webhook(request: Request):
                         # if not message_body:
                         #     message_body = message.get('image', {})
                         phone_number_id = value.get('metadata', {}).get('phone_number_id')
-                        image_info =  message.get('image', {})
-                        media_id = image_info.get("id")
+                        
                         
                         
                         
                         if "image" in message:
                              # Si el mensaje contiene una imagen
                             print(message_body)
-                            
+                            image_info =  message.get('image', {})
+                            media_id = image_info.get("id")
                             extention = image_info.get("mime_type").split("/")[1]
                             filename = f"{sender_number}_{media_id}.{extention}"
                             print("IMAGE ID: "+media_id)
@@ -180,7 +180,11 @@ async def webhook(request: Request):
                                 image_url = {"url": file_url}
                                 print(file_url)
                                 redisConection.guardar_datos_en_redis(phone_number_id, "image", image_url)
-                                redisConection.guardar_datos_en_redis(phone_number_id, "image", {"media_id": media_id})
+                                
+                                media_object = {"media_id": media_id}
+                                print(media_object)
+                                
+                                redisConection.guardar_datos_en_redis(phone_number_id, "image", media_object)
                                 guardarImagen(file_url, headers, filename)
                                 print("Imagen recibida y guardada en Redis")
                                 
@@ -221,9 +225,6 @@ async def webhook(request: Request):
                                             enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Acabas de ingresar el comprobante de pago, por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id, message_id)
                                             return
                                 
-                                        
-                                        
-                                        
                                     else:
                                     
                                         compro = {"comprobante": datosIA}
