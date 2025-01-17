@@ -282,7 +282,7 @@ async def webhook(request: Request):
                                             datos = redisConection.obtener_datos_de_redis(phone_number_id)
                                             cdula = datos["cedula"]
                                             enviarMensajeFile(f"Este pago fue redirigido debido a un error o  nuevo cliente. \n Numero de Documento: {cdula}", 
-                                                            phone_number_redirect, phone_number_id,datos["url"], media_id)
+                                                            phone_number_redirect, phone_number_id,datos["url"], datos["media_id"])
                                             print("MENSAJE A CAROLINA ENVIADO")
                                             return     
                                         return    
