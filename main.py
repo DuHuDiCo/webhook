@@ -433,7 +433,7 @@ def enviarMensajeFile(message, number, phone_number_id, url_file, media_id):
     print(data)
     
     response = requests.post(url, headers=headers, data=json.dumps(data))
-    print(response)
+    print(response.json())
     return response
 
 
