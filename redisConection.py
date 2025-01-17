@@ -26,12 +26,9 @@ def guardar_datos_en_redis(telefono,message_type,content):
         
     if message_type == "image":
         session_data["url"] = content["url"]
+        session_data["media_id"] = content["media_id"]
     
     if message_type == "comprobante":
-        
-        
-        
-        
         
         session_data["numero_recibo"] = content["comprobante"]["numero_recibo"] if content["comprobante"]["numero_recibo"] else ""
         session_data["fecha_pago"] = content["comprobante"]["fecha_pago"] if content["comprobante"]["fecha_pago"] else ""
