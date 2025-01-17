@@ -274,8 +274,16 @@ async def webhook(request: Request):
                                         
                                     if not datos["url"] is None:
                                         enviarMensaje("Pago agregado correctamente. El tiempo de aplicacion del pago varia entre 3 a 5 dias habiles. Tu asesor de cartera te contactara y te enviara el recibo del pago realizado. CHAT FINALIZADO 😊", sender_number, phone_number_id, message_id)
-                                        return
- 
+                                        if  new_client:
+                                
+                                            phone_number_redirect = secret.get("consignaNumber")
+                                            datos = redisConection.obtener_datos_de_redis(phone_number_id)
+                                            cdula = datos["cedula"]
+                                            enviarMensajeFile(f"Este pago fue redirigido debido a un error o  nuevo cliente. \n Numero de Documento: {cdula}", 
+                                                            phone_number_redirect, phone_number_id,datos["url"], media_id)
+                                            print("MENSAJE A CAROLINA ENVIADO")
+                                            return          
+                
                                     enviarMensaje("Gracias por ingresar tu numero de documento. Por favor envianos el comprobante de pago para verificarlo.", sender_number, phone_number_id ,message_id)
                                     return
                                     
