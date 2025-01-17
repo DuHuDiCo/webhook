@@ -147,15 +147,15 @@ async def webhook(request: Request):
                         # if not message_body:
                         #     message_body = message.get('image', {})
                         phone_number_id = value.get('metadata', {}).get('phone_number_id')
-                        
+                        image_info =  message.get('image', {})
+                        media_id = image_info.get("id")
                         
                         
                         
                         if "image" in message:
                              # Si el mensaje contiene una imagen
                             print(message_body)
-                            image_info =  message.get('image', {})
-                            media_id = image_info.get("id")
+                            
                             extention = image_info.get("mime_type").split("/")[1]
                             filename = f"{sender_number}_{media_id}.{extention}"
                             print("IMAGE ID: "+media_id)
