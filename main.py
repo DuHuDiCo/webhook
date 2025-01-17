@@ -180,7 +180,7 @@ async def webhook(request: Request):
                                 image_url = {"url": file_url}
                                 print(file_url)
                                 redisConection.guardar_datos_en_redis(phone_number_id, "image", image_url)
-                                redisConection.guardar_datos_en_redis(phone_number_id, "media_id", media_id)
+                                redisConection.guardar_datos_en_redis(phone_number_id, "image", {"media_id": media_id})
                                 guardarImagen(file_url, headers, filename)
                                 print("Imagen recibida y guardada en Redis")
                                 
