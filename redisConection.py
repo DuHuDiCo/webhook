@@ -17,7 +17,8 @@ def guardar_datos_en_redis(telefono,message_type,content):
             "fecha_pago": "",
             "valor": "",
             "banco": "",
-            "url": ""
+            "url": "",
+            "media_id":""
         }
     
     
