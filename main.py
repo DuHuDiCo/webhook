@@ -212,7 +212,16 @@ async def webhook(request: Request):
                                     print(validarResultadosIA(datosIA))
                                     
                                     if  validarResultadosIA(datosIA):
+                                        
+                                        datosRedis = redisConection.obtener_datos_de_redis(phone_number_id)
                                         new_client = True
+                                        if not datosRedis["cedula"]:
+                                            
+                                            enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Acabas de ingresar el comprobante de pago, por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id, message_id)
+                                            return
+                                
+                                        
+                                        
                                         
                                     else:
                                     
@@ -229,12 +238,7 @@ async def webhook(request: Request):
                                         
                                         redisConection.guardar_datos_en_redis(phone_number_id, "comprobante", compro)
                                         
-                                        datosRedis = redisConection.obtener_datos_de_redis(phone_number_id)
                                         
-                                        if not datosRedis["cedula"]:
-                                            enviarMensaje("Hola, gracias por contactarte con nosotros. Este es el bot de comprobantes de pago para ElectroHogar. Acabas de ingresar el comprobante de pago, por favor Ingresa tu numero de documento (sin espacios, guiones, puntos, comas.)", sender_number, phone_number_id, message_id)
-                                            return
-                                
                                 
                                         enviarMensaje("Gracias por enviar tu comprobante de pago. Por favor ingresa el nombre del banco donde realizaste el pago o la transferencia.", sender_number, phone_number_id,message_id)
 
@@ -294,11 +298,8 @@ async def webhook(request: Request):
                                 print(f"Mensaje recibido de {sender_number}: {message_body}")
                                 return    
                                
-                                
-                                    
-                              
-                            
-                                
+                
+                
                                     
                         if  new_client:
                             
